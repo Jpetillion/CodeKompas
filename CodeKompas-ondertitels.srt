@@ -1,0 +1,200 @@
+1
+00:00:00,280 --> 00:00:05,674
+CodeKompas helpt je om code te lezen, aandachtspunten te onderzoeken en zelf
+verder te leren.
+
+2
+00:00:05,954 --> 00:00:10,862
+In dit filmpje zie je waarom we de tool maakten, hoe je hem gebruikt en waar de
+grenzen liggen.
+
+3
+00:00:11,472 --> 00:00:18,377
+Bij programmeren kan een kleine schrijfafwijking je lang ophouden. Veel meldingen
+tegelijk kunnen het zoeken ook moeilijk maken.
+
+4
+00:00:18,657 --> 00:00:24,224
+Daarom sluit het ontwerp aan bij UDL: onderwijs zo ontwerpen dat verschillende
+leerlingen kunnen meedoen.
+
+5
+00:00:24,504 --> 00:00:33,242
+Je krijgt korte uitleg, kiest zelf wanneer je meer hulp opent en blijft zelf nadenken. Dat
+is een ontwerpkeuze, geen bewezen leerwinst.
+
+6
+00:00:33,852 --> 00:00:41,811
+CodeKompas is een Nederlandstalige uitbreiding voor Visual Studio Code, voor
+HTML, CSS en JavaScript.
+
+7
+00:00:42,091 --> 00:00:49,456
+De tool stelt vragen en geeft aanwijzingen. Je krijgt geen verbeterde code en je
+bestanden worden niet automatisch aangepast.
+
+8
+00:00:50,066 --> 00:00:56,344
+Het installatiebestand staat al in de CodeKompas-map. Open in VS Code het
+onderdeel Extensies.
+
+9
+00:00:56,624 --> 00:01:03,724
+Klik op de drie puntjes, kies Install from VSIX en selecteer codekompas, versie nul
+punt twee punt nul.
+
+10
+00:01:04,004 --> 00:01:10,912
+Herlaad het venster als VS Code dat vraagt. Voor de extensie heb je geen apart
+account of API-sleutel nodig.
+
+11
+00:01:11,522 --> 00:01:18,030
+Open een HTML-, CSS- of JavaScript-bestand en klik op het kompas in de
+activiteitenbalk.
+
+12
+00:01:18,310 --> 00:01:23,228
+Je kunt ook het opdrachtenpalet openen en zoeken naar CodeKompas: Open
+leerhulp.
+
+13
+00:01:23,508 --> 00:01:29,275
+Op Windows en Linux gebruik je Control, Shift, P. Op een Mac is dat Command, Shift,
+P.
+
+14
+00:01:29,885 --> 00:01:35,928
+Kijk naar dit voorbeeld. De naam bij het gebruik is anders overgenomen dan bij de
+declaratie erboven.
+
+15
+00:01:36,208 --> 00:01:42,159
+CodeKompas geeft een aanwijzing over de lettervolgorde. De tool geeft de juiste
+vervanging niet voor.
+
+16
+00:01:42,769 --> 00:01:49,277
+Kom je er nog niet uit? Open Een extra aanwijzing. Daar vind je uitleg en stappen om
+zelf na te lopen.
+
+17
+00:01:49,557 --> 00:01:54,350
+Lees de naam in delen en vergelijk de volgorde met de plaats waar je hem hebt
+aangemaakt.
+
+18
+00:01:54,960 --> 00:02:01,017
+Met Bekijk in mijn code spring je naar de plek van de hint. Vergelijk de twee namen
+en pas de code zelf aan.
+
+19
+00:02:01,297 --> 00:02:06,972
+Na een korte typepauze controleert de tool opnieuw. De hint verdwijnt als de
+aanleiding weg is.
+
+20
+00:02:07,582 --> 00:02:14,426
+Standaard zie je maximaal acht hints. Via Instellingen kun je bijvoorbeeld met drie
+beginnen en de wachttijd aanpassen.
+
+21
+00:02:14,706 --> 00:02:20,542
+Gebruik Hints pauzeren als je even rust wilt. Met Toon meer bekijk je meer gevonden
+aandachtspunten.
+
+22
+00:02:20,822 --> 00:02:24,661
+Is een naam bewust zo gekozen? Dan kun je die naam laten negeren.
+
+23
+00:02:25,271 --> 00:02:32,952
+CodeKompas herkent bepaalde ontbrekende, extra en verwisselde letters,
+hoofdletterverschillen en problemen met woordgrenzen.
+
+24
+00:02:33,232 --> 00:02:42,109
+Ook bepaalde haakjes, aanhalingstekens en scheidingstekens worden gecontroleerd.
+De tool vergelijkt met bekende termen of namen in hetzelfde bereik.
+
+25
+00:02:42,719 --> 00:02:48,765
+In HTML gaat het bijvoorbeeld om bekende tags en attributen, dubbele ids en
+sommige afsluitingen.
+
+26
+00:02:49,045 --> 00:02:54,289
+In CSS om eigenschapsnamen, eenvoudige waarden en de opbouw van declaraties.
+
+27
+00:02:54,569 --> 00:03:03,262
+In JavaScript om bekende browserbegrippen, namen binnen hetzelfde bereik en
+bepaalde structuurproblemen. Niet elke mogelijke fout wordt gevonden.
+
+28
+00:03:03,872 --> 00:03:11,726
+De tab Programmeerprincipes biedt uitleg bij wat er in je code staat, zoals scope,
+functies, arrays, events of Flexbox.
+
+29
+00:03:12,006 --> 00:03:19,804
+Er zijn ook denkvragen over herhaling en gedeelde opmaak. Herhaling hoeft niet fout
+te zijn: de kaart nodigt je uit om te onderzoeken.
+
+30
+00:03:20,414 --> 00:03:29,892
+De analyse werkt per bestand. Een verkeerde koppeling tussen een HTML-bestand
+en een apart CSS- of JavaScript-bestand kan dus onopgemerkt blijven.
+
+31
+00:03:30,172 --> 00:03:35,357
+De tool voert je code niet uit en ziet je webpagina niet. Test daarom zelf in de
+browser.
+
+32
+00:03:35,637 --> 00:03:43,562
+Gewone tekstspelling, TypeScript en frameworks zoals React vallen buiten deze
+versie. Geen hint betekent dus niet dat alles klopt.
+
+33
+00:03:44,172 --> 00:03:51,017
+CodeKompas analyseert binnen je VS Code-omgeving. De extensie uploadt je code
+niet en voert ze niet uit.
+
+34
+00:03:51,297 --> 00:03:58,376
+Er worden geen punten of leerlingdossiers bijgehouden. Werk je op afstand, dan
+draait de analyse op die andere computer.
+
+35
+00:03:58,986 --> 00:04:04,578
+Een volgende versie zou verbanden tussen bestanden kunnen controleren en
+optioneel uitleg kunnen voorlezen.
+
+36
+00:04:04,858 --> 00:04:11,078
+Vooral testen met leerlingen is belangrijk: welke hints helpen, welke zijn onterecht en
+wanneer wordt het te veel?
+
+37
+00:04:11,358 --> 00:04:18,841
+De uitgebreidere versie moet nog in de klas worden uitgeprobeerd. Dit zijn
+verbetervoorstellen, geen bestaande mogelijkheden.
+
+38
+00:04:19,451 --> 00:04:25,042
+Open nu een bestand uit de map examples. Daar staan bewust fouten in om de hulp
+uit te proberen.
+
+39
+00:04:25,322 --> 00:04:29,972
+Kies één hint, leg in je eigen woorden uit wat je onderzoekt en verander zelf iets.
+
+40
+00:04:30,252 --> 00:04:37,074
+Controleer daarna ook de werking. CodeKompas wijst de weg. Jij leert door te kijken,
+te proberen en uit te leggen.
+
+41
+00:04:37,684 --> 00:04:42,119
+Pauzeer of bekijk een stukje opnieuw wanneer je wilt. Veel succes met je code!

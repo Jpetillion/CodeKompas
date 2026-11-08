@@ -1,0 +1,63 @@
+CodeKompas — leren zonder voorzeggen
+Versie 0.2.0 · november 2026
+Speelduur: 4:42
+
+CodeKompas
+CodeKompas helpt je om code te lezen, aandachtspunten te onderzoeken en zelf verder te leren. In dit filmpje zie je waarom we de tool maakten, hoe je hem gebruikt en waar de grenzen liggen.
+
+Hulp die je zelf kunt kiezen
+Bij programmeren kan een kleine schrijfafwijking je lang ophouden. Veel meldingen tegelijk kunnen het zoeken ook moeilijk maken. Daarom sluit het ontwerp aan bij UDL: onderwijs zo ontwerpen dat verschillende leerlingen kunnen meedoen. Je krijgt korte uitleg, kiest zelf wanneer je meer hulp opent en blijft zelf nadenken. Dat is een ontwerpkeuze, geen bewezen leerwinst.
+
+Een leerhulp in VS Code
+CodeKompas is een Nederlandstalige uitbreiding voor Visual Studio Code, voor HTML, CSS en JavaScript. De tool stelt vragen en geeft aanwijzingen. Je krijgt geen verbeterde code en je bestanden worden niet automatisch aangepast.
+
+Installeren: één keer
+Het installatiebestand staat al in de CodeKompas-map. Open in VS Code het onderdeel Extensies. Klik op de drie puntjes, kies Install from VSIX en selecteer codekompas, versie nul punt twee punt nul. Herlaad het venster als VS Code dat vraagt. Voor de extensie heb je geen apart account of API-sleutel nodig.
+
+Open je bestand en de leerhulp
+Open een HTML-, CSS- of JavaScript-bestand en klik op het kompas in de activiteitenbalk. Je kunt ook het opdrachtenpalet openen en zoeken naar CodeKompas: Open leerhulp. Op Windows en Linux gebruik je Control, Shift, P. Op een Mac is dat Command, Shift, P.
+
+Kies één aandachtspunt
+Kijk naar dit voorbeeld. De naam bij het gebruik is anders overgenomen dan bij de declaratie erboven. CodeKompas geeft een aanwijzing over de lettervolgorde. De tool geeft de juiste vervanging niet voor.
+
+Vraag meer uitleg als je die nodig hebt
+Kom je er nog niet uit? Open Een extra aanwijzing. Daar vind je uitleg en stappen om zelf na te lopen. Lees de naam in delen en vergelijk de volgorde met de plaats waar je hem hebt aangemaakt.
+
+Jij past de code aan
+Met Bekijk in mijn code spring je naar de plek van de hint. Vergelijk de twee namen en pas de code zelf aan. Na een korte typepauze controleert de tool opnieuw. De hint verdwijnt als de aanleiding weg is.
+
+Jij bepaalt de hoeveelheid hulp
+Standaard zie je maximaal acht hints. Via Instellingen kun je bijvoorbeeld met drie beginnen en de wachttijd aanpassen. Gebruik Hints pauzeren als je even rust wilt. Met Toon meer bekijk je meer gevonden aandachtspunten. Is een naam bewust zo gekozen? Dan kun je die naam laten negeren.
+
+Welke patronen kan de tool vinden?
+CodeKompas herkent bepaalde ontbrekende, extra en verwisselde letters, hoofdletterverschillen en problemen met woordgrenzen. Ook bepaalde haakjes, aanhalingstekens en scheidingstekens worden gecontroleerd. De tool vergelijkt met bekende termen of namen in hetzelfde bereik.
+
+Voorbeelden per taal
+In HTML gaat het bijvoorbeeld om bekende tags en attributen, dubbele ids en sommige afsluitingen. In CSS om eigenschapsnamen, eenvoudige waarden en de opbouw van declaraties. In JavaScript om bekende browserbegrippen, namen binnen hetzelfde bereik en bepaalde structuurproblemen. Niet elke mogelijke fout wordt gevonden.
+
+Een denkkaart is geen foutmelding
+De tab Programmeerprincipes biedt uitleg bij wat er in je code staat, zoals scope, functies, arrays, events of Flexbox. Er zijn ook denkvragen over herhaling en gedeelde opmaak. Herhaling hoeft niet fout te zijn: de kaart nodigt je uit om te onderzoeken.
+
+Wat kan CodeKompas niet controleren?
+De analyse werkt per bestand. Een verkeerde koppeling tussen een HTML-bestand en een apart CSS- of JavaScript-bestand kan dus onopgemerkt blijven. De tool voert je code niet uit en ziet je webpagina niet. Test daarom zelf in de browser. Gewone tekstspelling, TypeScript en frameworks zoals React vallen buiten deze versie. Geen hint betekent dus niet dat alles klopt.
+
+Je code wordt niet geüpload
+CodeKompas analyseert binnen je VS Code-omgeving. De extensie uploadt je code niet en voert ze niet uit. Er worden geen punten of leerlingdossiers bijgehouden. Werk je op afstand, dan draait de analyse op die andere computer.
+
+Mogelijke volgende stappen
+Een volgende versie zou verbanden tussen bestanden kunnen controleren en optioneel uitleg kunnen voorlezen. Vooral testen met leerlingen is belangrijk: welke hints helpen, welke zijn onterecht en wanneer wordt het te veel? De uitgebreidere versie moet nog in de klas worden uitgeprobeerd. Dit zijn verbetervoorstellen, geen bestaande mogelijkheden.
+
+Probeer het zelf
+Open nu een bestand uit de map examples. Daar staan bewust fouten in om de hulp uit te proberen. Kies één hint, leg in je eigen woorden uit wat je onderzoekt en verander zelf iets. Controleer daarna ook de werking. CodeKompas wijst de weg. Jij leert door te kijken, te proberen en uit te leggen.
+
+Kijk. Begrijp. Probeer.
+Pauzeer of bekijk een stukje opnieuw wanneer je wilt. Veel succes met je code!
+
+Productienotitie
+De demonstratiekaarten komen uit de analyse van de echte distributiebundel. Voor de video is de kop vereenvoudigd tot Codehulp; de inhoud van de getoonde kaarten is behouden. De video is een geïllustreerde demonstratie, geen opname van een volledige VS Code-sessie. Vlaamse synthetische voice-over: Ellen.
+
+Bronnen
+CodeKompas 0.2.0: README.md, TRIGGERS.md, package.json, src/extension.js en de distributiebundel in de meegeleverde bronmap.
+UDL: https://www.cast.org/what-we-do/universal-design-for-learning/
+VSIX-installatie: https://code.visualstudio.com/docs/configure/extensions/extension-marketplace
+De koppeling van de ontwerpkeuzes aan UDL is een didactische interpretatie; er wordt geen bewezen effect op leerresultaten geclaimd.
