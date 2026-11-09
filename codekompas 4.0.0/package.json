@@ -1,7 +1,7 @@
 {
   "name": "codekompas",
-  "version": "0.2.0",
-  "description": "Nederlandstalige codehints zonder correcties, met een apart luik voor programmeerprincipes.",
+  "version": "4.0.0",
+  "description": "Nederlandstalige codehints voor HTML, CSS, JavaScript, Python en C#, zonder oplossingen voor te zeggen.",
   "main": "./dist/extension.js",
   "scripts": {
     "test": "node --test test/*.test.js",
@@ -11,7 +11,7 @@
   },
   "keywords": [],
   "author": "Joris Petillion",
-  "license": "MIT",
+  "license": "SEE LICENSE IN LICENSE",
   "type": "commonjs",
   "dependencies": {
     "acorn": "^8.19.0",
@@ -38,7 +38,10 @@
   "activationEvents": [
     "onLanguage:html",
     "onLanguage:css",
-    "onLanguage:javascript"
+    "onLanguage:javascript",
+    "onStartupFinished",
+    "onLanguage:python",
+    "onLanguage:csharp"
   ],
   "capabilities": {
     "untrustedWorkspaces": {
@@ -160,7 +163,10 @@
               "bem",
               "components",
               "gestalt",
-              "events"
+              "events",
+              "types",
+              "exceptions",
+              "imports"
             ]
           },
           "default": [],

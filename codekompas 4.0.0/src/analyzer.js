@@ -1,5 +1,6 @@
 'use strict';
 // Pure analysis: no filesystem, network, VS Code imports or student-code execution.
+const {analyzeLearning}=require('./learning-languages');
 const acorn = require('acorn');
 const loose = require('acorn-loose');
 const {htmlSyntax,cssSyntax}=require('./syntax');
@@ -145,19 +146,22 @@ function analyze(text, language, options={}) {
   }else if(kind==='order'){
    why='Deze naam lijkt op een bekend begrip, met mogelijk twee letters in een andere volgorde.';
    detail='Lees de naam in kleine stukken en wijs de letters één voor één aan. Controleer vooral de volgorde binnen elk stuk. De tool toont bewust geen vervangende naam.';
-  }else if(reference){why='Deze naam lijkt op een declaratie die binnen dit bereik bestaat.';if(kind==='case')detail+=' Bij eigen namen kan camelCase de woordgrenzen zichtbaar maken. Gebruik op alle plaatsen exact de schrijfwijze van je declaratie.';}
+  }else if(reference){why='Deze naam lijkt op een declaratie die binnen dit bereik bestaat.';}
   else if(context==='CSS-eigenschap'){
    detail+=' Een CSS-eigenschap benoemt wat je vormgeeft. Meerdelige standaardnamen gebruiken meestal kleine letters met koppeltekens (kebab-case).';
   }else if(context==='HTML-attribuut'){
    detail+=' Het attribuut is de naam vóór een eventuele koppeling met een waarde; controleer de waarde afzonderlijk.';
   }
+  if(context.startsWith('Python'))detail+=' Python is hoofdlettergevoelig. Eigen functies en variabelen gebruiken vaak snake_case; vaste namen hebben hun eigen schrijfwijze.';
+  if(context.startsWith('C#'))detail+=' C# is hoofdlettergevoelig. Methoden en typen gebruiken vaak PascalCase; lokale variabelen vaak camelCase. Bestaande .NET-namen staan vast.';
+  if(reference){why='Deze gebruikte naam lijkt op een declaratie in hetzelfde bereik. Heb je die declaratie hernoemd? Controleer dan ook de verwijzingen ernaar.';detail+=' Heb je de variabele hernoemd? Controleer of de verwijzingen nog dezelfde naam gebruiken als de declaratie.';steps=['Zoek waar je de bedoelde variabele of functie aanmaakt.','Vergelijk de volledige naam met deze plek: letters, volgorde en hoofdletters.','Controleer of de declaratie in dit blok of deze functie bereikbaar is.'];detail+=' Een declaratie is de plek waar je een variabele of functie aanmaakt.';}
   if(context==='JavaScript-eventnaam')detail+=' Browsergebeurtenissen hebben vaste namen. Zelfgemaakte events kunnen een andere, bewust gekozen naam hebben.';
   if(kind==='case'&&['JavaScript-eigenschap','JavaScript-browserbegrip'].includes(context))principle('naming',start,start+word.length,'Bij deze naam speelt de schrijfwijze van samengestelde woorden mee.');
   addIssue({start,end:start+word.length,context,kind:reference?'reference':kind,message:hint[0],detail,why,steps,ignorable:true});
  }
- function principle(id,start,end,reason){
+ function principle(id,start,end,reason,override){
   if(options.principles===false||seenPrinciples.has(id)||(options.disabledPrinciples||[]).includes(id))return;
-  seenPrinciples.add(id);principles.push({id,start,end,reason,...concepts[id]});
+  seenPrinciples.add(id);principles.push({id,start,end,reason,...(override||concepts[id])});
  }
  function indentation(code,offset,starts){
   if(options.indentationHints===false)return;
@@ -210,7 +214,17 @@ function analyze(text, language, options={}) {
    if(r.resolved || r.identifier.name==='✖' || globals.includes(r.identifier.name))continue;
    const id=r.identifier, local=visible(s);
    if(classify(id.name,local))check(id.name,offset+id.start,local,'Naam in dit bereik',true,true);
-   else check(id.name,offset+id.start,globals,'JavaScript-browserbegrip');
+   else {
+    // A shortened personal name is valid when declared. Only flag unresolved,
+    // substantial shared prefixes with one visible candidate; never reveal a replacement.
+    const prefixes=[...new Set(local)].filter(name=>Math.min(id.name.length,name.length)>=5&&Math.min(id.name.length,name.length)/Math.max(id.name.length,name.length)>=0.5&&(name.startsWith(id.name)||id.name.startsWith(name)));
+    if(prefixes.length===1)addIssue({start:offset+id.start,end:offset+id.end,kind:'reference',context:'Naam in dit bereik',ignorable:true,
+     message:'Heb je deze variabele hernoemd?',
+     why:'Deze gebruikte naam is hier niet gekoppeld aan een declaratie. Er bestaat in dit bereik een naam met hetzelfde begin maar een andere lengte.',
+     detail:'Als je de naam in een declaratie verandert, moeten de verwijzingen naar die variabele dezelfde naam gebruiken. De declaratie is waar je de variabele aanmaakt; een verwijzing is een plek waar je haar gebruikt. Controleer ook andere verwijzingen binnen het bereik van deze variabele. Een naam in een ander bestand kan ook bewust beschikbaar zijn; controleer dat eerst.',
+     steps:['Zoek waar je de bedoelde variabele aanmaakt.','Vergelijk de volledige naam daar met deze plek, ook het laatste deel en de hoofdletters.','Controleer of de declaratie bereikbaar is vanuit dit blok of deze functie.']});
+    else check(id.name,offset+id.start,globals,'JavaScript-browserbegrip');
+   }
   }
   // Only infer known receivers; do not guess arbitrary object or library methods.
   function receiver(node,depth=0){
@@ -469,6 +483,7 @@ function analyze(text, language, options={}) {
  if(language==='javascript')js(text);
  else if(language==='css')cssAnalyze(text);
  else if(language==='html')htmlAnalyze(text);
+ else if(language==='python'||language==='csharp')analyzeLearning(text,language,{addIssue,principle,check,classify,options});
  for(const issue of issues){
   const names={case:'Hoofdletters',order:'Lettervolgorde',chunks:'Volgorde van woorddelen',missing:'Ontbrekende letter',extra:'Extra letter',repeated:'Herhaalde letter',shape:'Gelijkende tekens',separators:'Woordgrenzen',reference:'Naam consequent overnemen',letters:'Letters vergelijken',syntax:'Structuur en leestekens',convention:'Schrijfafspraak',logic:'Bedoeling controleren'};
   issue.family=names[issue.kind]||'Aandachtspunt';

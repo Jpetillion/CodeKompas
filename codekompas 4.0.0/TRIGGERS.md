@@ -64,3 +64,7 @@ Kaarten verschijnen op basis van concrete syntactische signalen, niet op basis v
 - Geen automatische foutdiagnose op basis van dyslexie en geen leerlingprofilering.
 - Inline style-attributen leveren nog geen aparte CSS-spellinganalyse; inline eventhandlers worden niet als JavaScript geanalyseerd.
 - Niet elke syntaxfout krijgt een unieke uitleg. Ernstig beschadigde code kan herstel bemoeilijken; meldingen zijn dan voorlopig.
+
+## Python en C# (4.0.0)
+
+Zie de tabel en afbakening onder **Nieuw in 4.0.0** in README.md voor de concrete lexicale controles en principes. De bestaande JavaScript-parser en HTML/CSS-taaldiensten blijven ongewijzigd; Python/C# worden niet als JavaScript verwerkt.

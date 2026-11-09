@@ -1,41 +1,67 @@
 # CodeKompas · leren zonder voorzeggen
 
-Een Nederlandstalige VS Code-extensie voor leerlingen die ondersteuning willen bij het lezen en schrijven van HTML, CSS en JavaScript. Ontworpen met aandacht voor leerlingen met dyslexie: korte aanwijzingen, extra uitleg op verzoek, beperkte aantallen en geen automatische correctie.
+Een Nederlandstalige VS Code-extensie voor leerlingen die ondersteuning willen bij het lezen en schrijven van HTML, CSS, JavaScript, Python en C#. Ontworpen met aandacht voor leerlingen met dyslexie: korte aanwijzingen, extra uitleg op verzoek, beperkte aantallen en geen automatische correctie.
 
-**Versie 0.2.0 — uitgebreid na praktijktests en feedback.** De analyse, distributiebundel en interface-interacties zijn automatisch getest. De gebruiker bevestigde de werking van de vorige versie in VS Code; de uitgebreidere versie moet nog in de klas worden uitgeprobeerd. De extensie stelt geen diagnose en is niet als bewezen dyslexie-interventie gevalideerd.
+**Versie 4.0.0 — uitgebreid na praktijktests en feedback.** De analyse, distributiebundel en interface-interacties zijn automatisch getest. De gebruiker bevestigde de werking van de vorige versie in VS Code; de uitgebreidere versie moet nog in de klas worden uitgeprobeerd. De extensie stelt geen diagnose en is niet als bewezen dyslexie-interventie gevalideerd.
 
-## Bijwerken vanaf 0.1.0
+## Bijwerken
 
-Installeer de nieuwe VSIX via **Extensies → … → Install from VSIX…**. Verwijderen van de oude versie is normaal niet nodig: de publisher en extensienaam zijn hetzelfde. Herlaad het venster wanneer VS Code dat vraagt. Controleer op de extensiepagina dat **0.2.0** staat.
+Installeer de nieuwe VSIX via **Extensies → … → Install from VSIX…**. Verwijderen van de oude versie is normaal niet nodig: de publisher en extensienaam zijn hetzelfde. Herlaad het venster wanneer VS Code dat vraagt. Controleer op de extensiepagina dat **4.0.0** staat.
 
 Open daarna **Ctrl+Shift+P → CodeKompas: Open leerhulp**. Het luik opent niet vanzelf.
 
-## Nieuw in 0.2.0
+## Nieuw in 4.0.0
+
+Python en C# zijn toegevoegd aan beide tabs en aan de automatische controles bij typen, opslaan en bestandwissels. Geen Python- of .NET-runtime nodig voor CodeKompas zelf.
+
+| Taal | Spelling en structuur | Principes |
+| --- | --- | --- |
+| Python | Bekende ingebouwde namen, geselecteerde sleutelwoordtypo’s, vergelijkbare eigen namen, haakjes, afsluiten van tekst, eenvoudige blokkoppen, ontbrekende inspringing na een blokkop, gemengde tabs/spaties, toekennen in eenvoudige voorwaarden | snake_case, blokken, functies, voorwaarden, lussen, klassen, imports, exceptions, async |
+| C# | Bekende standaardtypen en geselecteerde methoden van Console, Math, Convert, String, Int32, Double en Boolean; hoofdletters, geselecteerde sleutelwoordtypo’s, vergelijkbare eigen namen, haakjes en tekstafsluiting; ontbrekende afsluiting bij eenvoudige Console-instructies | camelCase/PascalCase, typen en var, methoden, voorwaarden, lussen, klassen, namespaces, exceptions, async |
+
+**Afbakening:** Python en C# krijgen gerichte lexicale controles, geen volledige compiler of taalserver. Eigen namen worden voorzichtig vergeleken binnen eenvoudige blokken van het huidige bestand. Imports, overloads, overerving, generieke typen, dynamische attributen en projectbrede hernoemingen worden niet volledig opgelost. Interpolatie-expressies binnen strings en notebookcellen worden niet afzonderlijk geanalyseerd. Meerregelige Python-blokkoppen en complexe inspringfouten worden niet volledig gevalideerd. Geen hint betekent dus niet dat de code correct is. Gebruik de gewone Python- of C#-taalondersteuning van VS Code daarnaast voor volledige taaldiagnostiek.
+
+Commentaar, gewone en meerregelige tekst worden buiten de spellingcontrole gehouden. Geldige eigen namen worden niet verplicht omgezet naar een naamconventie. De extensie voert nooit leerlingcode uit en stelt geen vervangende code voor.
+
+De voorbeelden `examples/oefening.py` en `examples/Oefening.cs` bevatten bewust fouten. De juiste oplossingen staan niet in de hints.
+
+## Eerder toegevoegd in 0.3.0
+
+- Twee neutrale knoppen: **Spelling** en **Principes**.
+- Heranalyse bij elke save, na typen, bij bestandwissels, terugkeer naar het venster en opnieuw tonen van het paneel. Nul aandachtspunten stopt de analyse niet.
+- Start ook na het opstarten van VS Code; handmatig openen van het luik is niet nodig om controles te laten lopen.
+- Rode teller op Spelling, native paneelbadge (kleur volgens VS Code-thema) en een aantal in de statusbalk. De teller omvat ook hints voorbij de ingestelde weergavelimiet. Principes tellen niet als fouten mee.
+- De eerste zoekstap staat direct op de hintkaart; overige stappen blijven uitklapbaar.
+- Bij mogelijke afwijkingen van eigen variabelenamen: uitleg over declaraties, verwijzingen en hernoemen. Ook een langere oude naam na het verkorten van de declaratie kan een hint krijgen.
+- Namen worden binnen het huidige bestand en het geldende bereik vergeleken. De tool reconstrueert geen wijzigingsgeschiedenis en volgt geen willekeurige hernoeming door meerdere bestanden. Volledig anders gespelde namen worden niet automatisch aan elkaar gekoppeld. Correct gedeclareerde korte namen zijn toegestaan.
+- Bewust pauzeren of uitschakelen blijft gelden, ook bij opslaan.
+
+## Eerder toegevoegd in 0.2.0
 
 - Javascriptanalyse gaat verder met een herstellende parser wanneer een deel van het bestand onvolledig is.
 - Gerichte uitleg over camelCase, kebab-case, woordgrenzen, letters, leestekens, haakjes, tags, ontbrekende waarden en inspringing.
 - `class:` met een waarde wordt als attribuutkoppeling herkend; niet meer als verkeerd gespelde attribuutnaam.
 - Een vermoedelijk onderbroken DOM-keten, zoals een losse eigenschap na een puntkomma, krijgt een gerichte onderzoeksvraag.
 - Geldige CSS-hoofdletters krijgen optioneel leesbaarheidsadvies; ze worden niet als syntaxfout voorgesteld.
-- Uitklapbare patroonwijzer in de dyslexietab, categorieën per hint, aanleiding en stappen om zelf na te lopen.
+- Uitklapbare patroonwijzer in de spellingtab, categorieën per hint, aanleiding en stappen om zelf na te lopen.
 - **Toon meer** ontsluit meer gevonden aandachtspunten zonder projectinstellingen te wijzigen (tot 100 tegelijk).
 - Aanvullende herkenning van arrays, strings, NodeLists, events, callbacks, dubbele HTML-ids, nesting en diverse CSS-syntaxproblemen.
 - Dertig mogelijke contextkaarten. Zie **TRIGGERS.md** voor dekking en **PATROONWIJZER.md** voor de pedagogische onderbouwing.
 
 ## Installeren
 
-1. Download `codekompas-0.2.0.vsix` naar je computer.
+1. Download `codekompas-4.0.0.vsix` naar je computer.
 2. Open VS Code (versie 1.85 of hoger).
 3. Open **Extensions / Extensies** via de zijbalk.
 4. Klik bovenaan op **…** en kies **Install from VSIX… / Installeren vanuit VSIX…**.
 5. Kies het gedownloade bestand. Herlaad VS Code als daarom wordt gevraagd.
-6. Open een `.html`, `.css` of `.js`-bestand. Klik op het **kompas** in de activiteitenbalk, of voer **CodeKompas: Open leerhulp** uit via het opdrachtenpalet.
+6. Open een `.html`, `.css`, `.js`, `.py` of `.cs`-bestand. Klik op het **kompas** in de activiteitenbalk, of voer **CodeKompas: Open leerhulp** uit via het opdrachtenpalet.
 
 Een Marketplace-account, API-sleutel, abonnement of Node.js-installatie is niet nodig om de VSIX te gebruiken. De extensie staat niet op de Marketplace; de publishernaam in het pakket is een lokale pakketidentificatie.
 
 De map `examples` in het broncodepakket bevat opzettelijke fouten om de hints te testen. Lees daar `LEESMIJ.md`.
 
-## Tab 1 — Dyslexie · codehulp
+## Tab 1 — Spelling
 
 Dit is de standaardtab. Ze blijft gescheiden van de theorie.
 
@@ -62,7 +88,7 @@ Dit is de standaardtab. Ze blijft gescheiden van de theorie.
 
 De vergelijking zoekt een kleine afwijking, waaronder één verwisseling van aangrenzende letters. Het is een gerichte controle, geen volledige compiler of woordenboek. Namen die correct gedeclareerd zijn worden niet op Nederlandse spelling beoordeeld. Niet iedere schrijffout is een aanwijzing voor dyslexie; de categorieën beschrijven de code, niet de leerling. Een bewuste naam kan toevallig lijken op een bekend begrip: daarom zijn de meldingen voorzichtig en kunnen leerlingen namen negeren.
 
-## Tab 2 — Programmeerprincipes
+## Tab 2 — Principes
 
 Dit aparte, uitschakelbare luik toont conceptkaarten op basis van concrete code in het huidige bestand. Elke kaart bevat:
 
@@ -111,7 +137,7 @@ Open **Instellingen** in het luik, of zoek `CodeKompas` in de VS Code-instelling
 - `enabled`: zet de hele ondersteuning aan of uit.
 - `styleConventions`: optioneel advies over hoofdletters in standaard CSS-eigenschappen.
 - `indentationHints`: optioneel advies over gemengde tabs en spaties in code-inspringing.
-- `principles`: schakelt uitsluitend de conceptkaarten uit; dyslexiehints blijven actief.
+- `principles`: schakelt uitsluitend de conceptkaarten uit; spellinghints blijven actief.
 - `maxHints`: 1–100; standaard 8.
 - `delay`: 200–5000 ms; standaard 900.
 - `maxPrinciples`: 1–30; standaard 8. Ontwerp-/verbetersuggesties krijgen voorrang op algemene uitleg.
@@ -125,7 +151,7 @@ Het luik gebruikt de kleuren en het lettertype van het VS Code-thema, heeft toet
 
 ## Grenzen van deze versie
 
-- Controle per bestand, zonder projectbrede koppeling tussen HTML, CSS en JavaScript.
+- Controle per bestand, zonder projectbrede koppeling tussen HTML, CSS, JavaScript, Python en C#.
 - Geen spellingcontrole van Nederlandse of Engelse proza in comments, strings of zichtbare HTML-tekst.
 - Geen volledige JavaScript-typeservice; willekeurige bibliotheken, methoden op onbekende objecten, stringselectors en dynamische propertynamen worden niet geraden.
 - TypeScript, JSX, React, Vue, SCSS en andere talen zijn niet ondersteund.
@@ -154,7 +180,7 @@ Voor debuggen: open deze map in VS Code, voer `npm run bundle` uit en start daar
 
 - `src/analyzer.js`: zuivere detectie, patrooncategorieën en Nederlandstalige conceptkaarten.
 - `src/syntax.js`: HTML- en CSS-structuurcontroles.
-- `src/patterns.js`: compacte patroonwijzer in de dyslexietab.
+- `src/patterns.js`: compacte patroonwijzer in de spellingtab.
 - `src/extension.js`: VS Code-integratie, levenscyclus, instellingen en meldingen.
 - `media/panel.js` en `media/panel.css`: de twee tabs.
 - `test/`: detectietests, nagebootste VS Code-host en DOM-tests.
@@ -170,4 +196,17 @@ Nieuwe principes voeg je toe aan `concepts` en aan een passende parserregel. Voe
 - VS Code Webview API: https://code.visualstudio.com/api/extension-guides/webview
 - HTML- en CSS-vocabularia: meegebundelde Microsoft VS Code language services.
 
-MIT-licentie voor de eigen broncode. Licenties van afhankelijkheden staan in `THIRD_PARTY_NOTICES.txt`.
+Gebruiksvoorwaarden voor CodeKompas staan in `LICENSE`. Licenties van afhankelijkheden staan in `THIRD_PARTY_NOTICES.txt`.
+
+## Zelf bouwen uit de volledige broncode
+
+Vereist: Node.js 22 of hoger en npm. Open een terminal in de uitgepakte map `codekompas`:
+
+```sh
+npm ci
+npm run bundle
+npm test
+npm run package
+```
+
+De laatste opdracht maakt `codekompas-4.0.0.vsix`. Alle runtime-afhankelijkheden zitten in de bundel; leerlingen hebben alleen VS Code nodig. De ZIP bevat `src`, `media`, tests, voorbeelden, licenties, package-lock en bouwscripts. `node_modules` is niet meegestuurd; `npm ci` installeert de vastgelegde afhankelijkheden.

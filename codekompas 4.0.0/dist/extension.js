@@ -42,6 +42,198 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
 ));
 var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 
+// src/learning-languages.js
+var require_learning_languages = __commonJS({
+  "src/learning-languages.js"(exports2, module2) {
+    "use strict";
+    function mask(text, python) {
+      const out = text.split(""), strings = [], unclosed = [];
+      const blank = (a3, b2) => {
+        for (let n2 = a3; n2 < b2; n2++) if (out[n2] !== "\n" && out[n2] !== "\r") out[n2] = " ";
+      };
+      let i2 = 0;
+      while (i2 < text.length) {
+        if (python && text[i2] === "#" || !python && text.startsWith("//", i2)) {
+          let end = text.indexOf("\n", i2);
+          if (end < 0) end = text.length;
+          blank(i2, end);
+          i2 = end;
+          continue;
+        }
+        if (!python && text.startsWith("/*", i2)) {
+          let end = text.indexOf("*/", i2 + 2);
+          if (end < 0) {
+            unclosed.push(i2);
+            end = text.length;
+          } else end += 2;
+          blank(i2, end);
+          i2 = end;
+          continue;
+        }
+        if (text[i2] === '"' || text[i2] === "'") {
+          const start = i2, q = text[i2], run = text.slice(i2).match(/^"+/)?.[0].length || 0;
+          const triple = python && text.startsWith(q.repeat(3), i2), raw = !python && run >= 3;
+          const delim = raw ? '"'.repeat(run) : triple ? q.repeat(3) : q;
+          const verbatim = !python && /\$?@$|@\$$/.test(text.slice(Math.max(0, i2 - 2), i2));
+          i2 += delim.length;
+          let closed = false;
+          while (i2 < text.length) {
+            if (verbatim && text.startsWith('""', i2)) {
+              i2 += 2;
+              continue;
+            }
+            if (text.startsWith(delim, i2)) {
+              i2 += delim.length;
+              closed = true;
+              break;
+            }
+            if (text[i2] === "\\" && !verbatim && !raw) {
+              i2 += 2;
+              continue;
+            }
+            if (text[i2] === "\n" && !triple && !raw && !verbatim) break;
+            i2++;
+          }
+          if (!closed) unclosed.push(start);
+          strings.push({ start, end: i2 });
+          blank(start, i2);
+          continue;
+        }
+        i2++;
+      }
+      return { code: out.join(""), strings, unclosed };
+    }
+    var cards = {
+      pyNames: ["Python \xB7 snake_case", "Een naamafspraak maakt woorden in variabelen en functies herkenbaar.", "Zijn de namen duidelijk en consequent?", "Python gebruikt meestal kleine letters met underscores voor functies en variabelen. Klassen gebruiken vaak PascalCase. Dat zijn afspraken; de schrijfwijze bij definitie en gebruik moet exact overeenkomen."],
+      csNames: ["C# \xB7 camelCase en PascalCase", "Naamafspraken maken de rol van een naam herkenbaar.", "Welke naamafspraak hoort bij deze naam?", "Lokale variabelen en parameters gebruiken vaak camelCase; typen, methoden en properties vaak PascalCase. Bestaande .NET-namen staan vast. C# maakt onderscheid tussen hoofdletters en kleine letters."],
+      blocks: ["Python \xB7 inspringing en blokken", "Inspringing bepaalt welke instructies samen een blok vormen.", "Welke regels horen bij deze voorwaarde, lus of functie?", "Een blokkop kondigt een groep instructies aan. Binnen het blok staan regels op hetzelfde inspringniveau. Een vervolgregel binnen haakjes is geen nieuw blok. Vier spaties is een gebruikelijke afspraak, geen verplichte breedte."],
+      types: ["C# \xB7 typen en waarden", "Een type bepaalt welke waarden en bewerkingen bij een variabele passen.", "Past het type bij de gegevens die je nodig hebt?", "Bij var leidt de compiler het type af uit de beginwaarde; de variabele wordt daarmee niet typeloos. Tekst, gehele getallen en booleans hebben verschillende mogelijkheden."],
+      functions: ["Functies en methoden", "Een functie of methode groepeert een taak en kan een resultaat teruggeven.", "Kun je de taak in \xE9\xE9n zin beschrijven?", "Parameters ontvangen invoer; argumenten zijn de waarden bij een aanroep. Een resultaat teruggeven is iets anders dan tekst op het scherm tonen."],
+      conditions: ["Voorwaarden en vergelijken", "Een voorwaarde bepaalt welke code wordt uitgevoerd.", "Welke vergelijking drukt jouw bedoeling uit?", "Onderscheid een waarde toekennen van waarden vergelijken. Controleer ook wat er gebeurt wanneer de voorwaarde niet waar is."],
+      loops: ["Lussen \xB7 herhalen", "Een lus voert een taak meerdere keren uit.", "Wat verandert per herhaling, en wanneer stopt de lus?", "Bekijk begin, grens en voortgang. Bij een verzameling kun je de items doorlopen. Denk ook aan een lege verzameling en het laatste item."],
+      objects: ["Klassen en objecten", "Een klasse beschrijft gegevens en gedrag; een object is een concrete instantie.", "Welke gegevens en taken horen bij dit object?", "Een methode hoort bij gedrag; een veld of property bij gegevens. Houd verantwoordelijkheden overzichtelijk. Meerdere objecten kunnen verschillende toestanden hebben."],
+      exceptions: ["Exceptions \xB7 fouten opvangen", "Een exception onderbreekt de gewone uitvoering wanneer iets misloopt.", "Welke verwachte fout kun je hier zinvol afhandelen?", "Vang fouten gericht op. Alleen een fout verbergen kan later onduidelijk gedrag veroorzaken. Bedenk welke informatie of vervolgstap nodig is."],
+      imports: ["Modules en namespaces", "Code kan gebruikmaken van onderdelen uit andere bestanden of bibliotheken.", "Waar komt deze gebruikte naam vandaan?", "Een import of using helpt namen beschikbaar of korter bereikbaar te maken. Een zelfgekozen alias kan geldig zijn. CodeKompas volgt deze koppelingen niet door het volledige project."],
+      async: ["Asynchroon werken", "Een taak kan wachten op invoer of een bewerking buiten je programma.", "Waar wacht je op, en waar heb je het resultaat nodig?", "Async en await maken wachten expliciet. Asynchroon betekent niet automatisch dat rekenwerk parallel gebeurt. Denk ook aan fouten en annuleren."]
+    };
+    function analyzeLearning(text, language, { addIssue, principle, check, classify, options }) {
+      const py = language === "python", label = py ? "Python" : "C#", lex = mask(text, py), code = lex.code;
+      function issue(start, end, message, detail, steps, kind = "syntax") {
+        addIssue({ start, end, kind, context: label, ignorable: false, message, detail, steps });
+      }
+      function concept(id, start, reason) {
+        const c2 = cards[id];
+        principle(id === "pyNames" || id === "csNames" ? "naming" : id === "blocks" ? "scope" : id, start, start + 1, reason, { title: c2[0], definition: c2[1], question: c2[2], explanation: c2[3] });
+      }
+      for (const start of lex.unclosed) issue(start, start + 1, "Controleer waar deze tekst of commentaar eindigt.", "Een tekstfragment of commentaar lijkt niet afgesloten. De rest kan daardoor anders worden gelezen.", ["Zoek het begin van dit fragment.", "Controleer welk afsluitteken bij deze vorm hoort."]);
+      const stack = [], scopes = [{ parent: null, names: /* @__PURE__ */ new Set() }], scopeAt = /* @__PURE__ */ new Map();
+      let current = 0;
+      const lines = [];
+      let offset = 0, depth = 0, continued = false, previous = null;
+      const indents = [{ width: 0, scope: 0 }];
+      for (const line of code.split("\n")) {
+        const trim2 = line.trim(), prefix = line.match(/^[ \t]*/)[0], width = [...prefix].reduce((n2, c2) => c2 === "	" ? n2 + 8 - n2 % 8 : n2 + 1, 0);
+        const continuation = depth > 0 || continued;
+        if (py && trim2 && !continuation) {
+          while (indents.length > 1 && width < indents.at(-1).width) indents.pop();
+          if (width > indents.at(-1).width) {
+            const scope = scopes.length;
+            scopes.push({ parent: indents.at(-1).scope, names: /* @__PURE__ */ new Set() });
+            indents.push({ width, scope });
+          }
+          current = indents.at(-1).scope;
+          if (options.indentationHints !== false && prefix.includes("	") && prefix.includes(" ")) issue(offset, offset + prefix.length, "Controleer de combinatie van tabs en spaties.", "Python gebruikt inspringing om blokken te bepalen. Een mengeling kan een andere blokindeling opleveren of een inspringfout veroorzaken.", ["Maak witruimte zichtbaar.", "Vergelijk het niveau met de andere regels van dit blok."]);
+          if (previous?.block && width <= previous.width) issue(offset + prefix.length, offset + prefix.length + Math.max(1, trim2.split(/\s/)[0].length), "Welke regels horen bij het aangekondigde blok?", "Na deze blokkop wordt een ingesprongen instructie verwacht. Lege regels en commentaar vormen geen blokinhoud.", ["Bekijk de vorige blokkop.", "Bepaal welke instructies bij dat blok horen.", "Controleer hun inspringniveau."]);
+        }
+        lines.push({ line, offset, scope: current, continuation });
+        for (let j = 0; j < line.length; j++) {
+          const c2 = line[j], pos = offset + j;
+          scopeAt.set(pos, current);
+          if ("([{".includes(c2)) {
+            stack.push({ c: c2, pos });
+            depth++;
+            if (!py && c2 === "{") {
+              const next = scopes.length;
+              scopes.push({ parent: current, names: /* @__PURE__ */ new Set() });
+              current = next;
+            }
+          }
+          if (")]}".includes(c2)) {
+            const opener = stack.pop();
+            depth = Math.max(0, depth - 1);
+            if (!opener || "([{".indexOf(opener.c) !== ")]}".indexOf(c2)) issue(pos, pos + 1, "Controleer het bijbehorende haakje.", "Openings- en sluittekens vormen paren van hetzelfde soort.", ["Zoek het openingsteken.", "Werk van het binnenste paar naar buiten."]);
+            if (!py && c2 === "}") current = scopes[current].parent ?? 0;
+          }
+        }
+        if (py && trim2 && !continuation && depth === 0) {
+          const header = /^(?:(?:async\s+)?(?:def|for|with)\b|(?:if|elif|else|while|try|except|finally|class|match|case)\b)/.test(trim2);
+          if (header && !trim2.includes(":") && !trim2.endsWith("\\")) issue(offset + prefix.length, offset + line.length, "Controleer de overgang naar het blok.", "Deze regel lijkt een Python-blok te starten. Controleer het scheidingsteken tussen de blokkop en de instructies.", ["Lees de blokkop.", "Controleer hoe een blokkop in Python wordt afgesloten."]);
+          if (/^(if|elif|while)\b/.test(trim2) && /(?<![=!<>:])=(?!=)/.test(trim2)) issue(offset + prefix.length, offset + line.length, "Wil je hier toekennen of vergelijken?", "Een voorwaarde moet een waarheidswaarde opleveren. Controleer of jouw operator een vergelijking uitdrukt.", ["Verwoord je voorwaarde.", "Controleer de betekenis van de operator."]);
+          previous = { width, block: header && trim2.endsWith(":") };
+        }
+        continued = /\\\s*$/.test(line);
+        offset += line.length + 1;
+      }
+      for (const item of stack.slice(-3)) issue(item.pos, item.pos + 1, "Waar wordt dit haakje afgesloten?", "Er is geen bijpassend sluitteken gevonden buiten tekst en commentaar.", ["Volg de code vanaf dit openingsteken.", "Controleer waar deze groep eindigt."]);
+      if (!py) {
+        for (let n2 = 0; n2 < lines.length; n2++) {
+          const { line, offset: offset2 } = lines[n2], trim2 = line.trim(), next = lines.slice(n2 + 1).find((x2) => x2.line.trim())?.line.trim() || "";
+          if (/^Console\.(?:WriteLine|Write|ReadLine|ReadKey|Clear)\s*\(.*\)$/.test(trim2) && !/^[.;)]/.test(next)) {
+            issue(offset2 + line.lastIndexOf(")"), offset2 + line.lastIndexOf(")") + 1, "Is deze instructie volledig afgesloten?", "Een gewone C#-instructie heeft een afsluiting nodig. Controleer of deze aanroep af is of op de volgende regel verdergaat.", ["Bepaal waar deze instructie eindigt.", "Controleer het afsluitteken voor een gewone C#-instructie."]);
+          }
+        }
+      }
+      const declarations = /* @__PURE__ */ new Set(), allDeclared = /* @__PURE__ */ new Set();
+      const decl = py ? /\b(?:def|class|for|as)\s+([\p{L}_][\p{L}\p{N}_]*)|\b([\p{L}_][\p{L}\p{N}_]*)\s*(?::[^=\n]+)?=(?!=)/gu : /\b(?:var|int|double|float|decimal|string|bool|char|long|short|byte|object|class|struct|interface|enum|record|void)\s+(@?[\p{L}_][\p{L}\p{N}_]*)/gu;
+      for (const m2 of code.matchAll(decl)) {
+        const name = m2[1] || m2[2], pos = m2.index + m2[0].indexOf(name);
+        declarations.add(pos);
+        allDeclared.add(name.replace(/^@/, ""));
+        scopes[scopeAt.get(pos) ?? 0].names.add(name.replace(/^@/, ""));
+      }
+      if (py) {
+        for (const m2 of code.matchAll(/\b(?:import\s+([^\n]+)|def\s+\w+\s*\(([^)]*)\))/g)) for (const t16 of (m2[1] || m2[2]).matchAll(/[\p{L}_][\p{L}\p{N}_]*/gu)) allDeclared.add(t16[0]);
+      }
+      const builtins = py ? "print input len range int float str bool list dict set tuple enumerate zip sum min max sorted open isinstance abs round type True False None".split(" ") : ["Console", "Math", "Convert", "String", "Int32", "Double", "Boolean"];
+      const api = py ? {} : { Console: ["WriteLine", "Write", "ReadLine", "ReadKey", "Clear"], Math: ["Abs", "Round", "Floor", "Ceiling", "Sqrt", "Pow", "Min", "Max"], Convert: ["ToInt32", "ToDouble", "ToString", "ToBoolean"], String: ["IsNullOrEmpty", "IsNullOrWhiteSpace", "Join", "Format"], Int32: ["Parse", "TryParse"], Double: ["Parse", "TryParse"], Boolean: ["Parse", "TryParse"] };
+      const typos = py ? { retrun: "return", improt: "import", imoprt: "import", whlie: "while", esle: "else", fro: "for" } : { retrun: "return", pubic: "public", publci: "public", privte: "private", statci: "static", voiid: "void", whlie: "while", forech: "foreach", usign: "using" };
+      const reserved = new Set((py ? "False None True and as assert async await break class continue def del elif else except finally for from global if import in is lambda nonlocal not or pass raise return try while with yield match case" : "abstract as async await base bool break byte case catch char checked class const continue decimal default delegate do double else enum event explicit extern false finally fixed float for foreach if implicit in int interface internal is lock long namespace new null object operator out override params private protected public readonly record ref return sbyte sealed short sizeof stackalloc static string struct switch this throw true try typeof uint ulong unchecked unsafe ushort using virtual void volatile while var get set init required").split(" "));
+      for (const m2 of code.matchAll(/@?[\p{L}_][\p{L}\p{N}_]*/gu)) {
+        const word = m2[0], pos = m2.index, prev = code.slice(0, pos).trimEnd(), after = code.slice(pos + word.length), scope = scopes[scopeAt.get(pos) ?? 0];
+        if (declarations.has(pos) || allDeclared.has(word) || word.startsWith("@") || reserved.has(word) || builtins.includes(word)) continue;
+        if (prev.endsWith(".")) {
+          const receiver = prev.match(/([\w]+)\.$/)?.[1];
+          if (!py && api[receiver] && !allDeclared.has(receiver)) check(word, pos, api[receiver], "C# \xB7 .NET-methode");
+          continue;
+        }
+        if (typos[word] && !/^\s*(?:=|\()/.test(after)) check(word, pos, [typos[word]], label + " \xB7 sleutelwoord");
+        else if (/^\s*\(/.test(after) || !py && /^\s*\./.test(after) || ["true", "false", "none"].includes(word.toLowerCase())) check(word, pos, builtins, label + " \xB7 standaardnaam");
+        let names = [];
+        for (let s2 = scope; s2; s2 = s2.parent === null ? null : scopes[s2.parent]) names.push(...s2.names);
+        if (names.length && classify(word, names)) check(word, pos, names, label + " \xB7 eigen naam", true, true);
+        else if ([...new Set(names)].filter((name) => Math.min(name.length, word.length) >= 5 && Math.min(name.length, word.length) / Math.max(name.length, word.length) >= 0.5 && (name.startsWith(word) || word.startsWith(name))).length === 1) {
+          addIssue({ start: pos, end: pos + word.length, kind: "reference", context: label + " \xB7 eigen naam", ignorable: true, message: "Heb je deze variabele hernoemd?", detail: "Een zichtbare naam heeft hetzelfde begin maar een andere lengte. Als je de declaratie wijzigt, moeten verwijzingen naar die variabele dezelfde naam blijven gebruiken. De tool kent geen namen uit andere bestanden; controleer of dit bewust zo geschreven is.", steps: ["Zoek waar je de bedoelde variabele aanmaakt.", "Vergelijk de volledige naam bij de declaratie en het gebruik.", "Controleer ook de andere verwijzingen."] });
+        }
+      }
+      for (const { line, offset: offset2, continuation } of lines) {
+        if (py && continuation) continue;
+        const m2 = line.match(/^\s*([A-Za-z]+)\b/);
+        if (!m2) continue;
+        const word = m2[1], pos = offset2 + line.indexOf(word), lower = word.toLowerCase();
+        if (!allDeclared.has(word) && word !== lower && ["if", "else", "while", "for", "foreach", "return", "class", "def", "public", "private", "static", "using", "import"].includes(lower) && !/^\s*(?:=|\()/.test(line.slice(m2[0].length))) check(word, pos, [lower], label + " \xB7 sleutelwoord");
+      }
+      const triggers = [["functions", py ? /\bdef\s/ : /\b(?:void|int|string|bool|double|Task)\s+\w+\s*\(/], ["conditions", /\b(?:if|elif|switch|match)\b/], ["loops", /\b(?:for|foreach|while)\b/], ["objects", /\b(?:class|struct|record)\b/], ["exceptions", /\b(?:try|except|catch|finally|throw|raise)\b/], ["imports", py ? /\b(?:import|from)\b/ : /\busing\b/], ["async", /\b(?:async|await)\b/]];
+      if (py) triggers.push(["blocks", /\b(?:def|if|for|while|class)\b/], ["pyNames", /\bdef\b|\b\w+\s*=/]);
+      else triggers.push(["csNames", /\b(?:class|var|int|string|void)\b/], ["types", /\b(?:var|int|string|bool|double|decimal)\b/]);
+      for (const [id, re] of triggers) {
+        const m2 = code.match(re);
+        if (m2) concept(id, m2.index, "Dit begrip komt voor in je " + label + "-code.");
+      }
+    }
+    module2.exports = { analyzeLearning, mask };
+  }
+});
+
 // node_modules/acorn/dist/acorn.js
 var require_acorn = __commonJS({
   "node_modules/acorn/dist/acorn.js"(exports2, module2) {
@@ -105138,6 +105330,7 @@ var require_safe_parse = __commonJS({
 var require_analyzer = __commonJS({
   "src/analyzer.js"(exports2, module2) {
     "use strict";
+    var { analyzeLearning } = require_learning_languages();
     var acorn = require_acorn();
     var loose = require_acorn_loose();
     var { htmlSyntax, cssSyntax } = require_syntax();
@@ -105292,20 +105485,27 @@ var require_analyzer = __commonJS({
           detail = "Lees de naam in kleine stukken en wijs de letters \xE9\xE9n voor \xE9\xE9n aan. Controleer vooral de volgorde binnen elk stuk. De tool toont bewust geen vervangende naam.";
         } else if (reference) {
           why = "Deze naam lijkt op een declaratie die binnen dit bereik bestaat.";
-          if (kind === "case") detail += " Bij eigen namen kan camelCase de woordgrenzen zichtbaar maken. Gebruik op alle plaatsen exact de schrijfwijze van je declaratie.";
         } else if (context === "CSS-eigenschap") {
           detail += " Een CSS-eigenschap benoemt wat je vormgeeft. Meerdelige standaardnamen gebruiken meestal kleine letters met koppeltekens (kebab-case).";
         } else if (context === "HTML-attribuut") {
           detail += " Het attribuut is de naam v\xF3\xF3r een eventuele koppeling met een waarde; controleer de waarde afzonderlijk.";
         }
+        if (context.startsWith("Python")) detail += " Python is hoofdlettergevoelig. Eigen functies en variabelen gebruiken vaak snake_case; vaste namen hebben hun eigen schrijfwijze.";
+        if (context.startsWith("C#")) detail += " C# is hoofdlettergevoelig. Methoden en typen gebruiken vaak PascalCase; lokale variabelen vaak camelCase. Bestaande .NET-namen staan vast.";
+        if (reference) {
+          why = "Deze gebruikte naam lijkt op een declaratie in hetzelfde bereik. Heb je die declaratie hernoemd? Controleer dan ook de verwijzingen ernaar.";
+          detail += " Heb je de variabele hernoemd? Controleer of de verwijzingen nog dezelfde naam gebruiken als de declaratie.";
+          steps = ["Zoek waar je de bedoelde variabele of functie aanmaakt.", "Vergelijk de volledige naam met deze plek: letters, volgorde en hoofdletters.", "Controleer of de declaratie in dit blok of deze functie bereikbaar is."];
+          detail += " Een declaratie is de plek waar je een variabele of functie aanmaakt.";
+        }
         if (context === "JavaScript-eventnaam") detail += " Browsergebeurtenissen hebben vaste namen. Zelfgemaakte events kunnen een andere, bewust gekozen naam hebben.";
         if (kind === "case" && ["JavaScript-eigenschap", "JavaScript-browserbegrip"].includes(context)) principle("naming", start, start + word.length, "Bij deze naam speelt de schrijfwijze van samengestelde woorden mee.");
         addIssue({ start, end: start + word.length, context, kind: reference ? "reference" : kind, message: hint[0], detail, why, steps, ignorable: true });
       }
-      function principle(id, start, end, reason) {
+      function principle(id, start, end, reason, override) {
         if (options.principles === false || seenPrinciples.has(id) || (options.disabledPrinciples || []).includes(id)) return;
         seenPrinciples.add(id);
-        principles.push({ id, start, end, reason, ...concepts[id] });
+        principles.push({ id, start, end, reason, ...override || concepts[id] });
       }
       function indentation(code, offset, starts) {
         if (options.indentationHints === false) return;
@@ -105400,7 +105600,21 @@ var require_analyzer = __commonJS({
           if (r2.resolved || r2.identifier.name === "\u2716" || globals.includes(r2.identifier.name)) continue;
           const id = r2.identifier, local = visible(s2);
           if (classify(id.name, local)) check(id.name, offset + id.start, local, "Naam in dit bereik", true, true);
-          else check(id.name, offset + id.start, globals, "JavaScript-browserbegrip");
+          else {
+            const prefixes = [...new Set(local)].filter((name) => Math.min(id.name.length, name.length) >= 5 && Math.min(id.name.length, name.length) / Math.max(id.name.length, name.length) >= 0.5 && (name.startsWith(id.name) || id.name.startsWith(name)));
+            if (prefixes.length === 1) addIssue({
+              start: offset + id.start,
+              end: offset + id.end,
+              kind: "reference",
+              context: "Naam in dit bereik",
+              ignorable: true,
+              message: "Heb je deze variabele hernoemd?",
+              why: "Deze gebruikte naam is hier niet gekoppeld aan een declaratie. Er bestaat in dit bereik een naam met hetzelfde begin maar een andere lengte.",
+              detail: "Als je de naam in een declaratie verandert, moeten de verwijzingen naar die variabele dezelfde naam gebruiken. De declaratie is waar je de variabele aanmaakt; een verwijzing is een plek waar je haar gebruikt. Controleer ook andere verwijzingen binnen het bereik van deze variabele. Een naam in een ander bestand kan ook bewust beschikbaar zijn; controleer dat eerst.",
+              steps: ["Zoek waar je de bedoelde variabele aanmaakt.", "Vergelijk de volledige naam daar met deze plek, ook het laatste deel en de hoofdletters.", "Controleer of de declaratie bereikbaar is vanuit dit blok of deze functie."]
+            });
+            else check(id.name, offset + id.start, globals, "JavaScript-browserbegrip");
+          }
         }
         function receiver(node, depth = 0) {
           if (!node || depth > 6) return null;
@@ -105799,6 +106013,7 @@ var require_analyzer = __commonJS({
       if (language === "javascript") js(text);
       else if (language === "css") cssAnalyze(text);
       else if (language === "html") htmlAnalyze(text);
+      else if (language === "python" || language === "csharp") analyzeLearning(text, language, { addIssue, principle, check, classify, options });
       for (const issue of issues) {
         const names = { case: "Hoofdletters", order: "Lettervolgorde", chunks: "Volgorde van woorddelen", missing: "Ontbrekende letter", extra: "Extra letter", repeated: "Herhaalde letter", shape: "Gelijkende tekens", separators: "Woordgrenzen", reference: "Naam consequent overnemen", letters: "Letters vergelijken", syntax: "Structuur en leestekens", convention: "Schrijfafspraak", logic: "Bedoeling controleren" };
         issue.family = names[issue.kind] || "Aandachtspunt";
@@ -105825,7 +106040,7 @@ var require_patterns = __commonJS({
       { title: "Leestekens en koppelingen", text: "Een punt, puntkomma, dubbele punt en gelijkteken doen verschillende dingen. Bepaal eerst welke verbinding je bedoelt." },
       { title: "Paren en grenzen", text: "Volg haakjes, aanhalingstekens, tags en blokken vanaf hun begin tot hun einde. Controleer ook wat er vlak v\xF3\xF3r de markering staat." },
       { title: "Namen consequent overnemen", text: "Vergelijk gebruik en declaratie binnen hetzelfde bereik. Dezelfde bedoeling met een andere naam kan onbedoeld naar iets anders verwijzen." },
-      { title: "Inspringing en overzicht", text: "Gemengde tabs en spaties kunnen de structuur onduidelijk maken. Inspringing is hier een leesbaarheidsafspraak, geen diagnose of automatische syntaxfout." },
+      { title: "Inspringing en overzicht", text: "Gemengde tabs en spaties kunnen de structuur onduidelijk maken. In Python bepaalt inspringing ook welke regels een blok vormen. In de andere ondersteunde talen is ze vooral een leesbaarheidsafspraak." },
       { title: "Stap voor stap lezen", text: "Kies \xE9\xE9n aandachtspunt. Open de uitleg als je die nodig hebt, loop de denkstappen na en controleer opnieuw. Met Toon meer kun je extra gevonden aandachtspunten bekijken." }
     ];
   }
@@ -105836,7 +106051,7 @@ var vscode = require("vscode");
 var crypto = require("node:crypto");
 var { analyze } = require_analyzer();
 var patternGuide = require_patterns();
-var supported = /* @__PURE__ */ new Set(["html", "css", "javascript"]);
+var supported = /* @__PURE__ */ new Set(["html", "css", "javascript", "python", "csharp"]);
 function activate(context) {
   const diagnostics = vscode.languages.createDiagnosticCollection("CodeKompas");
   const timers = /* @__PURE__ */ new Map(), results = /* @__PURE__ */ new Map(), hintLimits = /* @__PURE__ */ new Map();
@@ -105853,7 +106068,7 @@ function activate(context) {
   }
   function payload() {
     const doc = lastDocument;
-    if (!doc || doc.isClosed || !supported.has(doc.languageId)) return { paused, patternGuide, issues: [], principles: [], notice: "Open een HTML-, CSS- of JavaScript-bestand.", file: "" };
+    if (!doc || doc.isClosed || !supported.has(doc.languageId)) return { paused, patternGuide, issues: [], principles: [], notice: "Open een HTML-, CSS-, JavaScript-, Python- of C#-bestand.", file: "" };
     const result = results.get(doc.uri.toString()) || { issues: [], principles: [], notice: "Even wachten op de analyse\u2026" };
     return {
       paused,
@@ -105868,8 +106083,23 @@ function activate(context) {
     };
   }
   function publish() {
-    status.text = paused ? "$(debug-pause) CodeKompas" : "$(compass) CodeKompas";
-    view?.webview.postMessage({ type: "update", data: payload() });
+    const data = payload(), count = data.total ?? data.issues.length;
+    status.text = paused ? "$(debug-pause) CodeKompas" : `$(compass) CodeKompas \xB7 ${count}`;
+    status.tooltip = `${data.file || "CodeKompas"}: ${count} mogelijke aandachtspunten. Open de leerhulp.`;
+    if (view) {
+      view.badge = count ? { value: count, tooltip: `${count} mogelijke aandachtspunten` } : void 0;
+      try {
+        Promise.resolve(view.webview.postMessage({ type: "update", data })).catch(() => {
+        });
+      } catch {
+      }
+    }
+  }
+  function refreshActive() {
+    const active = vscode.window.activeTextEditor?.document;
+    if (active) lastDocument = active;
+    if (lastDocument && !lastDocument.isClosed) schedule(lastDocument, true);
+    publish();
   }
   function run(doc) {
     if (doc.isClosed || !supported.has(doc.languageId)) return;
@@ -105920,11 +106150,11 @@ function activate(context) {
     const nonce = crypto.randomBytes(24).toString("hex");
     const script = v2.webview.asWebviewUri(vscode.Uri.joinPath(context.extensionUri, "media", "panel.js"));
     const style = v2.webview.asWebviewUri(vscode.Uri.joinPath(context.extensionUri, "media", "panel.css"));
-    v2.webview.html = `<!doctype html><html lang="nl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src ${v2.webview.cspSource}; script-src 'nonce-${nonce}';"><link rel="stylesheet" href="${style}"><title>CodeKompas</title></head><body><header><p class="eyebrow">STAP VOOR STAP</p><h1>CodeKompas</h1><p>Jij zoekt. Wij wijzen de weg.</p><p id="file"></p><button id="pause" type="button">Pauzeren</button></header><nav aria-label="Ondersteuning"><button id="spelling" aria-pressed="true" type="button">Dyslexie \xB7 codehulp</button><button id="principles" aria-pressed="false" type="button">Programmeerprincipes</button></nav><p id="summary" role="status" aria-live="polite"></p><main id="cards"></main><footer><p>Mogelijke aandachtspunten, geen beoordeling. Geen hint betekent niet dat alle code correct is.</p><button id="settings" type="button">Instellingen</button></footer><script nonce="${nonce}" src="${script}"></script></body></html>`;
+    v2.webview.html = `<!doctype html><html lang="nl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src ${v2.webview.cspSource}; script-src 'nonce-${nonce}';"><link rel="stylesheet" href="${style}"><title>CodeKompas</title></head><body><header><p class="eyebrow">STAP VOOR STAP</p><h1>CodeKompas</h1><p>Jij zoekt. Wij wijzen de weg.</p><p id="file"></p><button id="pause" type="button">Pauzeren</button></header><nav aria-label="Ondersteuning"><button id="spelling" aria-pressed="true" type="button">Spelling <span id="spelling-count" class="count" hidden aria-hidden="true"></span></button><button id="principles" aria-pressed="false" type="button">Principes</button></nav><p id="summary" role="status" aria-live="polite"></p><main id="cards"></main><footer><p>Mogelijke aandachtspunten, geen beoordeling. Geen hint betekent niet dat alle code correct is.</p><button id="settings" type="button">Instellingen</button></footer><script nonce="${nonce}" src="${script}"></script></body></html>`;
     context.subscriptions.push(v2.webview.onDidReceiveMessage(async (msg) => {
       if (!msg || typeof msg.type !== "string") return;
       if (msg.type === "ready") {
-        publish();
+        refreshActive();
         return;
       }
       if (msg.type === "pause") {
@@ -105959,9 +106189,11 @@ function activate(context) {
         recheck();
       }
     }));
-    v2.onDidDispose(() => {
-      view = void 0;
-    });
+    context.subscriptions.push(v2.onDidChangeVisibility(() => {
+      if (v2.visible) refreshActive();
+    }), v2.onDidDispose(() => {
+      if (view === v2) view = void 0;
+    }));
     publish();
   } };
   context.subscriptions.push(
@@ -105969,9 +106201,7 @@ function activate(context) {
     status,
     vscode.window.registerWebviewViewProvider("codekompas.panel", provider),
     vscode.commands.registerCommand("codekompas.open", () => vscode.commands.executeCommand("codekompas.panel.focus")),
-    vscode.commands.registerCommand("codekompas.analyze", () => {
-      if (vscode.window.activeTextEditor) schedule(vscode.window.activeTextEditor.document, true);
-    }),
+    vscode.commands.registerCommand("codekompas.analyze", refreshActive),
     vscode.commands.registerCommand("codekompas.pause", () => {
       paused = !paused;
       recheck();
@@ -105985,6 +106215,15 @@ function activate(context) {
       if (e2.contentChanges.length) schedule(e2.document);
     }),
     vscode.workspace.onDidOpenTextDocument((d2) => schedule(d2, true)),
+    vscode.workspace.onDidSaveTextDocument((d2) => {
+      const active = vscode.window.activeTextEditor?.document;
+      if (active) lastDocument = active;
+      schedule(d2, true);
+      publish();
+    }),
+    vscode.window.onDidChangeWindowState((state) => {
+      if (state.focused) refreshActive();
+    }),
     vscode.workspace.onDidCloseTextDocument((d2) => {
       const key = d2.uri.toString();
       clearTimeout(timers.get(key));

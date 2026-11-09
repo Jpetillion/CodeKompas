@@ -8,11 +8,14 @@ function button(text,fn){const b=el('button',text);b.type='button';b.addEventLis
 function render(){
  $('file').textContent=data.file||'';$('pause').textContent=data.paused?'Hints hervatten':'Hints pauzeren';
  $('spelling').setAttribute('aria-pressed',String(tab==='issues'));$('principles').setAttribute('aria-pressed',String(tab==='principles'));
+ const count=data.total??data.issues.length;
+ $('spelling-count').textContent=String(count);$('spelling-count').hidden=count===0;
+ $('spelling').setAttribute('aria-label',`Spelling: ${count} mogelijke aandachtspunten`);
  const cards=$('cards');cards.replaceChildren();
  const list=data[tab]||[];
  if(tab==='issues'&&data.patternGuide?.length){
   const guide=el('details');guide.append(el('summary','Welke patronen helpt CodeKompas nalopen?'));
-  guide.append(el('p','Dit zijn patronen in code, geen test op dyslexie.'));
+  guide.append(el('p','Kies één patroon om stap voor stap je code na te kijken.'));
   for(const p of data.patternGuide)guide.append(el('h3',p.title),el('p',p.text));
   cards.append(guide);
  }
@@ -24,6 +27,7 @@ function render(){
    if(item.family)card.append(el('p',item.family,'eyebrow'));
    card.append(el('h2',item.message),el('p',item.context),el('code',item.display||item.word));
    if(item.why)card.append(el('p',item.why,'reason'));
+   if(item.steps?.length)card.append(el('p',`Begin hier: ${item.steps[0]}`,'question'));
    const details=el('details'),summary=el('summary','Een extra aanwijzing');details.append(summary,el('p',item.detail));
    if(item.steps?.length){details.append(el('h3','Zelf nalopen'));const steps=el('ol');for(const step of item.steps)steps.append(el('li',step));details.append(steps);}
    card.append(details);

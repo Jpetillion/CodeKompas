@@ -1,3 +1,21 @@
+## 4.0.0 — 2026-11-09
+
+Op verzoek genummerd als 4.0.0 in plaats van de geplande 0.4.0.
+
+- Python en C# toegevoegd aan activatie, editorcontroles en beide tabs.
+- Lokale spelling- en structuurcontroles met taalgerichte uitleg en conceptkaarten.
+- Strings en commentaar uitgesloten; voorbeelden en regressietests voor beide talen.
+- Geen automatische oplossingen, externe runtimes of uitvoering van leerlingcode.
+- Alle wijzigingen uit 0.3.0 behouden.
+
+## 0.3.0 — 2026-11-09
+
+- Neutrale knoppen Spelling en Principes; numerieke badge en statusbalkteller.
+- Heranalyse bij opslaan, vensterfocus, paneelzichtbaarheid en webview-ready; extra opstartactivatie.
+- Direct zichtbare eerste zoekstap bij spellinghints.
+- Contextuitleg over hernoemde declaraties en achtergebleven verwijzingen; voorzichtige vergelijking van unieke verkorte/langere namen binnen hetzelfde bereik.
+- Regressietests voor fout → schoon → nieuwe fout, opslaan, achtergrondbestanden, focus, paneelherstel, aantallen en hernoemingen.
+
 # Wijzigingen
 
 ## 0.2.0 — 22 oktober 2026

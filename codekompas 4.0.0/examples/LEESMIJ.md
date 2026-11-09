@@ -12,3 +12,7 @@ Open elk bestand afzonderlijk en klik op het kompas links.
 Deze bestanden zijn oefenmateriaal met opzettelijke fouten, geen afgewerkte webapp.
 De controle werkt per bestand. Een fout in een selector die naar een ander bestand
 verwijst wordt in deze versie niet gecontroleerd.
+
+## Python en C#
+
+Open `oefening.py` en `Oefening.cs` voor de extra talen. Beide bevatten opzettelijke fouten en zijn geen programma’s om ongewijzigd uit te voeren. CodeKompas voert ze niet uit. Corrigeer één aandachtspunt, sla op en introduceer opnieuw een fout om de heranalyse te controleren.

@@ -3,7 +3,7 @@ const vscode = require('vscode');
 const crypto = require('node:crypto');
 const {analyze} = require('./analyzer');
 const patternGuide=require('./patterns');
-const supported=new Set(['html','css','javascript']);
+const supported=new Set(['html','css','javascript','python','csharp']);
 function activate(context){
  const diagnostics=vscode.languages.createDiagnosticCollection('CodeKompas');
  const timers=new Map(), results=new Map(), hintLimits=new Map();let paused=false, view, lastDocument;
@@ -13,13 +13,28 @@ function activate(context){
  function ignored(doc){return [...config(doc).get('ignoreWords',[]),...context.workspaceState.get('ignoredWords',[])];}
  function payload(){
   const doc=lastDocument;
-  if(!doc||doc.isClosed||!supported.has(doc.languageId))return {paused,patternGuide,issues:[],principles:[],notice:'Open een HTML-, CSS- of JavaScript-bestand.',file:''};
+  if(!doc||doc.isClosed||!supported.has(doc.languageId))return {paused,patternGuide,issues:[],principles:[],notice:'Open een HTML-, CSS-, JavaScript-, Python- of C#-bestand.',file:''};
   const result=results.get(doc.uri.toString())||{issues:[],principles:[],notice:'Even wachten op de analyse…'};
   return {paused,patternGuide,enabled:config(doc).get('enabled',true),file:doc.uri.path.split('/').pop(),version:doc.version,uri:doc.uri.toString(),...result,
    issues:result.issues.map((x,i)=>({...x,index:i,line:doc.positionAt(x.start).line+1})),
    principles:result.principles.map((x,i)=>({...x,index:i,line:doc.positionAt(x.start).line+1}))};
  }
- function publish(){status.text=paused?'$(debug-pause) CodeKompas':'$(compass) CodeKompas';view?.webview.postMessage({type:'update',data:payload()});}
+ function publish(){
+  const data=payload(),count=data.total??data.issues.length;
+  status.text=paused?'$(debug-pause) CodeKompas':`$(compass) CodeKompas · ${count}`;
+  status.tooltip=`${data.file||'CodeKompas'}: ${count} mogelijke aandachtspunten. Open de leerhulp.`;
+  if(view){
+   view.badge=count?{value:count,tooltip:`${count} mogelijke aandachtspunten`}:undefined;
+   // Hidden/disposed webviews can reject delivery; ready/visibility will resync.
+   try{Promise.resolve(view.webview.postMessage({type:'update',data})).catch(()=>{});}catch{}
+  }
+ }
+ function refreshActive(){
+  const active=vscode.window.activeTextEditor?.document;
+  if(active)lastDocument=active;
+  if(lastDocument&&!lastDocument.isClosed)schedule(lastDocument,true);
+  publish();
+ }
  function run(doc){
   if(doc.isClosed||!supported.has(doc.languageId))return;
   const cfg=config(doc), key=doc.uri.toString();
@@ -49,10 +64,10 @@ function activate(context){
   const nonce=crypto.randomBytes(24).toString('hex');
   const script=v.webview.asWebviewUri(vscode.Uri.joinPath(context.extensionUri,'media','panel.js'));
   const style=v.webview.asWebviewUri(vscode.Uri.joinPath(context.extensionUri,'media','panel.css'));
-  v.webview.html=`<!doctype html><html lang="nl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src ${v.webview.cspSource}; script-src 'nonce-${nonce}';"><link rel="stylesheet" href="${style}"><title>CodeKompas</title></head><body><header><p class="eyebrow">STAP VOOR STAP</p><h1>CodeKompas</h1><p>Jij zoekt. Wij wijzen de weg.</p><p id="file"></p><button id="pause" type="button">Pauzeren</button></header><nav aria-label="Ondersteuning"><button id="spelling" aria-pressed="true" type="button">Dyslexie · codehulp</button><button id="principles" aria-pressed="false" type="button">Programmeerprincipes</button></nav><p id="summary" role="status" aria-live="polite"></p><main id="cards"></main><footer><p>Mogelijke aandachtspunten, geen beoordeling. Geen hint betekent niet dat alle code correct is.</p><button id="settings" type="button">Instellingen</button></footer><script nonce="${nonce}" src="${script}"></script></body></html>`;
+  v.webview.html=`<!doctype html><html lang="nl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src ${v.webview.cspSource}; script-src 'nonce-${nonce}';"><link rel="stylesheet" href="${style}"><title>CodeKompas</title></head><body><header><p class="eyebrow">STAP VOOR STAP</p><h1>CodeKompas</h1><p>Jij zoekt. Wij wijzen de weg.</p><p id="file"></p><button id="pause" type="button">Pauzeren</button></header><nav aria-label="Ondersteuning"><button id="spelling" aria-pressed="true" type="button">Spelling <span id="spelling-count" class="count" hidden aria-hidden="true"></span></button><button id="principles" aria-pressed="false" type="button">Principes</button></nav><p id="summary" role="status" aria-live="polite"></p><main id="cards"></main><footer><p>Mogelijke aandachtspunten, geen beoordeling. Geen hint betekent niet dat alle code correct is.</p><button id="settings" type="button">Instellingen</button></footer><script nonce="${nonce}" src="${script}"></script></body></html>`;
   context.subscriptions.push(v.webview.onDidReceiveMessage(async msg=>{
    if(!msg||typeof msg.type!=='string')return;
-   if(msg.type==='ready'){publish();return;}
+   if(msg.type==='ready'){refreshActive();return;}
    if(msg.type==='pause'){paused=!paused;recheck();return;}
    if(msg.type==='settings'){await vscode.commands.executeCommand('workbench.action.openSettings','@ext:codekompas.codekompas');return;}
    const doc=lastDocument,result=doc&&results.get(doc.uri.toString());
@@ -69,15 +84,21 @@ function activate(context){
     await context.workspaceState.update('ignoredWords',[...words]);recheck();
    }
   }));
-  v.onDidDispose(()=>{view=undefined;});publish();
+  context.subscriptions.push(v.onDidChangeVisibility(()=>{if(v.visible)refreshActive();}),v.onDidDispose(()=>{if(view===v)view=undefined;}));publish();
  }};
  context.subscriptions.push(diagnostics,status,vscode.window.registerWebviewViewProvider('codekompas.panel',provider),
   vscode.commands.registerCommand('codekompas.open',()=>vscode.commands.executeCommand('codekompas.panel.focus')),
-  vscode.commands.registerCommand('codekompas.analyze',()=>{if(vscode.window.activeTextEditor)schedule(vscode.window.activeTextEditor.document,true);}),
+  vscode.commands.registerCommand('codekompas.analyze',refreshActive),
   vscode.commands.registerCommand('codekompas.pause',()=>{paused=!paused;recheck();}),
   vscode.commands.registerCommand('codekompas.resetIgnored',async()=>{await context.workspaceState.update('ignoredWords',[]);recheck();vscode.window.showInformationMessage('De via CodeKompas genegeerde woorden zijn hersteld. Woorden in je instellingen blijven behouden.');}),
   vscode.workspace.onDidChangeTextDocument(e=>{if(e.contentChanges.length)schedule(e.document);}),
   vscode.workspace.onDidOpenTextDocument(d=>schedule(d,true)),
+  vscode.workspace.onDidSaveTextDocument(d=>{
+   const active=vscode.window.activeTextEditor?.document;
+   if(active)lastDocument=active;
+   schedule(d,true);publish();
+  }),
+  vscode.window.onDidChangeWindowState(state=>{if(state.focused)refreshActive();}),
   vscode.workspace.onDidCloseTextDocument(d=>{const key=d.uri.toString();clearTimeout(timers.get(key));timers.delete(key);results.delete(key);hintLimits.delete(key);diagnostics.delete(d.uri);if(lastDocument===d){lastDocument=undefined;publish();}}),
   vscode.workspace.onDidChangeConfiguration(e=>{if(e.affectsConfiguration('codekompas')){hintLimits.clear();recheck();}}),
   vscode.window.onDidChangeActiveTextEditor(e=>{if(e){lastDocument=e.document;schedule(e.document,true);publish();}}),
