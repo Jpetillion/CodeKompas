@@ -3,7 +3,7 @@ const Module=require('node:module');
 function harness(entry='../src/extension'){ 
  const handlers={},commands={},values=new Map(),records=new Map(),messages=[],configuration={delay:200};let provider; const status={show(){},dispose(){}};
  const disposable=()=>({dispose(){}}),event=name=>cb=>{handlers[name]=cb;return disposable();};
- const doc={uri:{toString:()=> 'file:///lesson.js',path:'/lesson.js'},languageId:'javascript',version:1,isClosed:false,text:'document.getElementByID("x")',getText(){return this.text;},positionAt(offset){return {line:this.text.slice(0,offset).split('\n').length-1,character:offset};}};
+ const doc={uri:{toString:()=> 'file:///lesson.js',path:'/lesson.js'},languageId:'javascript',version:1,isClosed:false,text:'document.getElementByID("x")',getText(){return this.text;},positionAt(offset){return {line:this.text.slice(0,offset).split('\n').length-1,character:offset-this.text.lastIndexOf('\n',offset-1)-1};}};
  class Range{constructor(start,end){this.start=start;this.end=end;}}
  class Diagnostic{constructor(range,message,severity){Object.assign(this,{range,message,severity});}}
  const editor={document:doc,revealRange(){}};

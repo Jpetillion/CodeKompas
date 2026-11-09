@@ -1,3 +1,7 @@
+# Aanvulling bij 4.1.0
+
+De actuele installatie-, taal- en release-instructies staan in README.md. Vijf paneeltalen, regel/kolom, gemarkeerde codefragmenten, versieaanduiding en oefenvoorbeelden zijn toegevoegd. Buiten het Nederlands worden beknopte contextgebonden onderzoekshints gebruikt; de oorspronkelijke Nederlandse details blijven openklapbaar. De technische controles hieronder blijven gelden.
+
 # CodeKompas · leren zonder voorzeggen
 
 Een Nederlandstalige VS Code-extensie voor leerlingen die ondersteuning willen bij het lezen en schrijven van HTML, CSS, JavaScript, Python en C#. Ontworpen met aandacht voor leerlingen met dyslexie: korte aanwijzingen, extra uitleg op verzoek, beperkte aantallen en geen automatische correctie.
@@ -50,7 +54,7 @@ De voorbeelden `examples/oefening.py` en `examples/Oefening.cs` bevatten bewust 
 
 ## Installeren
 
-1. Download `codekompas-4.0.0.vsix` naar je computer.
+1. Download `codekompas-4.1.0.vsix` naar je computer.
 2. Open VS Code (versie 1.85 of hoger).
 3. Open **Extensions / Extensies** via de zijbalk.
 4. Klik bovenaan op **…** en kies **Install from VSIX… / Installeren vanuit VSIX…**.
@@ -209,4 +213,4 @@ npm test
 npm run package
 ```
 
-De laatste opdracht maakt `codekompas-4.0.0.vsix`. Alle runtime-afhankelijkheden zitten in de bundel; leerlingen hebben alleen VS Code nodig. De ZIP bevat `src`, `media`, tests, voorbeelden, licenties, package-lock en bouwscripts. `node_modules` is niet meegestuurd; `npm ci` installeert de vastgelegde afhankelijkheden.
+De laatste opdracht maakt `codekompas-4.1.0.vsix`. Alle runtime-afhankelijkheden zitten in de bundel; leerlingen hebben alleen VS Code nodig. De ZIP bevat `src`, `media`, tests, voorbeelden, licenties, package-lock en bouwscripts. `node_modules` is niet meegestuurd; `npm ci` installeert de vastgelegde afhankelijkheden.

@@ -4,7 +4,7 @@ CodeKompas werd ontwikkeld als hulpmiddel rond spelling en programmeerprincipes 
 
 De tool helpt leerlingen mogelijke fouten te onderzoeken met Nederlandstalige aanwijzingen, zonder de oplossing voor te zeggen of hun code automatisch te wijzigen.
 
-**Versie: 4.0.0** · Ondersteunt **HTML, CSS, JavaScript, Python en C#**.
+**Versie: 4.1.0** · Ondersteunt **HTML, CSS, JavaScript, Python en C#**.
 
 ## Vrij gebruiken in de klas
 
@@ -14,15 +14,30 @@ De tool helpt leerlingen mogelijke fouten te onderzoeken met Nederlandstalige aa
 
 **Vragen:** [joris.petillion@onderwijs.gent.be](mailto:joris.petillion@onderwijs.gent.be)
 
-## Installatie
+## Nieuw in 4.1.0
 
-1. Download het installatiebestand **`codekompas-4.0.0.vsix`**.
+- Kies **Nederlands, English, Türkçe, العربية of Русский** bovenaan het paneel. De keuze wordt onthouden.
+- Knoppen, meldingen, beknopte onderzoekshints en principe-uitleg verschijnen in de gekozen taal. De uitgebreidere oorspronkelijke Nederlandse uitleg blijft openklapbaar. VS Code-opdrachtnamen en instellingen blijven Nederlandstalig.
+- Arabische tekst leest van rechts naar links; code blijft van links naar rechts.
+- Kaarten tonen **regel, kolom en een gemarkeerd codefragment**. De pakketversie staat rechtsboven.
+- **Zelf nalopen / Check it yourself** biedt zoekstappen en waar passend een los oefenvoorbeeld, geen correctie van de gemarkeerde regel. Voorbeelden met sterk gelijkende namen worden weggelaten.
+- Spelling, Principes, rode cijferbadge, paneelbadge, statusbalkteller en heranalyse na typen, opslaan en bestandwissels blijven behouden. Er zijn geen extra pop-ups.
+
+## Installeren in VS Code / Install in VS Code
+
+1. Open **Releases** op de GitHub-repositorypagina van CodeKompas. Download onder **Assets** het bestand **`codekompas-4.1.0.vsix`**, niet de automatisch aangeboden broncode-ZIP.
 2. Open **Visual Studio Code** (versie 1.85 of hoger).
 3. Open **Extensies / Extensions** via het pictogram in de zijbalk.
 4. Klik bovenaan op **…** en kies **Installeren vanuit VSIX… / Install from VSIX…**.
 5. Selecteer het gedownloade bestand en voltooi de installatie.
 6. Herlaad het venster wanneer VS Code dat vraagt. Dit kan ook via het opdrachtenpalet met **Developer: Reload Window**.
 7. Open een `.html`, `.css`, `.js`, `.py` of `.cs`-bestand.
+
+**Via het opdrachtenpalet:** open **Ctrl+Shift+P** (Windows/Linux) of **Cmd+Shift+P** (macOS), kies **Extensions: Install from VSIX…** en selecteer het bestand. Open daarna het CodeKompas-paneel via het kompasicoon.
+
+**English:** Download the `.vsix` asset from **Releases** on this project's GitHub repository page. In VS Code, open the Command Palette, choose **Extensions: Install from VSIX…**, and select the file. Open CodeKompas using the compass icon and choose your language at the top of the sidebar.
+
+Deze uitgave behoudt extensie-ID **`codekompas.codekompas`** en kan daardoor een eerder geïnstalleerde lokale versie bijwerken. Via GitHub gedownloade updates installeer je zelf.
 
 Een bestaande versie kun je bijwerken door de nieuwe VSIX op dezelfde manier te installeren. Voor CodeKompas zelf zijn geen API-sleutel, abonnement, Python- of .NET-installatie nodig. Om je eigen programma’s uit te voeren, heb je uiteraard wel de bijbehorende programmeeromgeving nodig.
 
@@ -76,3 +91,43 @@ Vermeld bij een technisch probleem liefst de versie van CodeKompas, de programme
 ## Broncode en verdere documentatie
 
 De broncode-ZIP bevat de volledige code, tests, voorbeelden en bouwscripts. De uitgebreide beschrijving van controles, beperkingen en bouwinstructies staat in `HANDLEIDING.md`. Zie ook `TRIGGERS.md`, `PATROONWIJZER.md` en `CHANGELOG.md`.
+
+## Bouwen en testen / Build and test
+
+Gebruik Node.js **22 of hoger** en npm. Voer in de map met `package.json` deze opdrachten afzonderlijk uit:
+
+```sh
+npm ci
+npm run bundle
+npm test
+npm run package
+```
+
+`npm ci` installeert de vastgelegde afhankelijkheden. `npm run bundle` maakt de distributiebundel in `dist/`; de tests gebruiken ook die bundel. `npm run package` maakt **`codekompas-4.1.0.vsix`**. Leerlingen hebben Node.js niet nodig voor het installeren of gebruiken van deze VSIX.
+
+## Repository en GitHub Releases
+
+De broncode-ZIP bevat uitsluitend broncode, vertalingen, media, tests, voorbeelden, licenties, documentatie, configuratie en bouwscripts, inclusief het lockbestand. Gegenereerde bestanden zijn uitgesloten.
+
+- **In Git:** `src/`, `media/`, `test/`, `examples/`, `scripts/`, `licenses/`, documentatie, `package.json`, `package-lock.json` en configuratiebestanden.
+- **Niet in Git:** `dist/`, `node_modules/`, `.vsix`- en `.zip`-bestanden. De `.gitignore` sluit ze uit.
+- **In Releases:** maak bijvoorbeeld tag `v4.1.0` en voeg de gebouwde VSIX als releasebestand toe onder **Assets**. De automatisch aangeboden broncode-archieven zijn geen installatiebestanden.
+
+Als gegenereerde bestanden al in Git staan, haalt `.gitignore` ze niet vanzelf uit de index. Verwijder uitsluitend die gegenereerde bestanden uit de Git-index; behoud broncode en lokale bestanden. Publiceren gebeurt door de repositorybeheerder.
+
+
+## Vertalingen onderhouden
+
+De taalbestanden staan in `src/locales/`. Ze bevatten de interface, beknopte onderzoekshints en uitleg bij principes. De uitgebreide Nederlandse bronhints blijven beschikbaar. Laat de vertalingen nalezen door taalvaardige leerlingen of collega’s; ze zijn nog niet door moedertaalsprekers in de klas gevalideerd. Gebruik de feedbackformulieren om onduidelijke termen te melden.
+
+## Officiële repository en downloads
+
+Broncode: https://github.com/Jpetillion/CodeKompas
+
+Installatiebestanden: https://github.com/Jpetillion/CodeKompas/releases
+
+Download de VSIX onder **Assets**. Open in VS Code het opdrachtenpalet, kies **Extensions: Install from VSIX…**, selecteer het bestand en open het kompasicoon. De extensie-ID blijft `codekompas.codekompas`.
+
+## Samen aan CodeKompas werken
+
+Help verbeteringen samen te brengen in deze centrale repository. Bespreek je idee via een issue. Voor samenwerking met een branch in deze repository kun je toegang vragen aan Joris Petillion. Werk vervolgens op een aparte branch en dien een pull request naar `main` in. Zie `CONTRIBUTING.md`.

@@ -1,3 +1,11 @@
+## 4.1.0
+
+- Vijf paneeltalen: Nederlands, Engels, Turks, Arabisch en Russisch, met onthouden taalkeuze en Arabische leesrichting.
+- Vertaalde beknopte hints en principe-uitleg; oorspronkelijke Nederlandse details optioneel beschikbaar.
+- Regel/kolom, gemarkeerd codefragment, pakketversie en losse oefenvoorbeelden.
+- Broncodepakket zonder dist, node_modules of installatiebestanden; README met Releases en bouwinstructies.
+- Bestaande extensie-ID, talen en automatische heranalyse behouden.
+
 ## 4.0.0 — 2026-11-09
 
 Op verzoek genummerd als 4.0.0 in plaats van de geplande 0.4.0.

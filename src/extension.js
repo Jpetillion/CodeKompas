@@ -3,28 +3,39 @@ const vscode = require('vscode');
 const crypto = require('node:crypto');
 const {analyze} = require('./analyzer');
 const patternGuide=require('./patterns');
+const {localize,localizeIssue,normalize,languages}=require('./localization');
+const extensionVersion=require('../package.json').version;
 const supported=new Set(['html','css','javascript','python','csharp']);
 function activate(context){
  const diagnostics=vscode.languages.createDiagnosticCollection('CodeKompas');
+ const languageState=context.globalState||context.workspaceState;
+ let language=normalize(languageState.get('language',vscode.workspace.getConfiguration('codekompas').get('language','nl')));
  const timers=new Map(), results=new Map(), hintLimits=new Map();let paused=false, view, lastDocument;
  const status=vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right,40);
  status.command='codekompas.open';status.tooltip='Open CodeKompas — hints zonder oplossingen';status.show();
  function config(doc){return vscode.workspace.getConfiguration('codekompas',doc?.uri);}
  function ignored(doc){return [...config(doc).get('ignoreWords',[]),...context.workspaceState.get('ignoredWords',[])];}
- function payload(){
+ function rawPayload(){
   const doc=lastDocument;
   if(!doc||doc.isClosed||!supported.has(doc.languageId))return {paused,patternGuide,issues:[],principles:[],notice:'Open een HTML-, CSS-, JavaScript-, Python- of C#-bestand.',file:''};
   const result=results.get(doc.uri.toString())||{issues:[],principles:[],notice:'Even wachten op de analyse…'};
-  return {paused,patternGuide,enabled:config(doc).get('enabled',true),file:doc.uri.path.split('/').pop(),version:doc.version,uri:doc.uri.toString(),...result,
-   issues:result.issues.map((x,i)=>({...x,index:i,line:doc.positionAt(x.start).line+1})),
-   principles:result.principles.map((x,i)=>({...x,index:i,line:doc.positionAt(x.start).line+1}))};
+  return {paused,patternGuide,codeLanguage:doc.languageId,enabled:config(doc).get('enabled',true),file:doc.uri.path.split('/').pop(),version:doc.version,uri:doc.uri.toString(),...result,
+   issues:result.issues.map((x,i)=>({...x,index:i,...location(doc,x)})),
+   principles:result.principles.map((x,i)=>({...x,index:i,...location(doc,x)}))};
  }
+ function location(doc,item){
+  const text=doc.getText(),position=doc.positionAt(item.start),lineStart=text.lastIndexOf('\n',item.start-1)+1;
+  let lineEnd=text.indexOf('\n',item.start);if(lineEnd<0)lineEnd=text.length;
+  const end=Math.min(item.end,lineEnd);
+  return {line:position.line+1,column:position.character+1,preview:{before:text.slice(Math.max(lineStart,item.start-120),item.start),mark:text.slice(item.start,end),after:text.slice(end,Math.min(lineEnd,end+120))}};
+ }
+ function payload(){return localize({...rawPayload(),extensionVersion},language);}
  function publish(){
   const data=payload(),count=data.total??data.issues.length;
   status.text=paused?'$(debug-pause) CodeKompas':`$(compass) CodeKompas · ${count}`;
-  status.tooltip=`${data.file||'CodeKompas'}: ${count} mogelijke aandachtspunten. Open de leerhulp.`;
+  status.tooltip=`${data.file||'CodeKompas'}: ${data.ui.found.replace('{n}',count)}`;
   if(view){
-   view.badge=count?{value:count,tooltip:`${count} mogelijke aandachtspunten`}:undefined;
+   view.badge=count?{value:count,tooltip:data.ui.found.replace('{n}',count)}:undefined;
    // Hidden/disposed webviews can reject delivery; ready/visibility will resync.
    try{Promise.resolve(view.webview.postMessage({type:'update',data})).catch(()=>{});}catch{}
   }
@@ -43,7 +54,7 @@ function activate(context){
    const result=analyze(doc.getText(),doc.languageId,{ignoreWords:ignored(doc),maxHints:hintLimits.get(key)||cfg.get('maxHints',8),styleConventions:cfg.get('styleConventions',true),indentationHints:cfg.get('indentationHints',true),maxPrinciples:cfg.get('maxPrinciples',8),principles:cfg.get('principles',true),disabledPrinciples:cfg.get('disabledPrinciples',[]),maxBytes:cfg.get('maxCharacters',250000)});
    results.set(key,result);
    diagnostics.set(doc.uri,result.issues.map(x=>{
-    const d=new vscode.Diagnostic(new vscode.Range(doc.positionAt(x.start),doc.positionAt(x.end)),x.message,vscode.DiagnosticSeverity.Information);
+    const d=new vscode.Diagnostic(new vscode.Range(doc.positionAt(x.start),doc.positionAt(x.end)),localizeIssue(x,language,doc.languageId).message,vscode.DiagnosticSeverity.Information);
     d.source='CodeKompas';d.code=x.context;
     if(x.kind==='convention')d.severity=vscode.DiagnosticSeverity.Hint;return d;
    }));
@@ -64,10 +75,11 @@ function activate(context){
   const nonce=crypto.randomBytes(24).toString('hex');
   const script=v.webview.asWebviewUri(vscode.Uri.joinPath(context.extensionUri,'media','panel.js'));
   const style=v.webview.asWebviewUri(vscode.Uri.joinPath(context.extensionUri,'media','panel.css'));
-  v.webview.html=`<!doctype html><html lang="nl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src ${v.webview.cspSource}; script-src 'nonce-${nonce}';"><link rel="stylesheet" href="${style}"><title>CodeKompas</title></head><body><header><p class="eyebrow">STAP VOOR STAP</p><h1>CodeKompas</h1><p>Jij zoekt. Wij wijzen de weg.</p><p id="file"></p><button id="pause" type="button">Pauzeren</button></header><nav aria-label="Ondersteuning"><button id="spelling" aria-pressed="true" type="button">Spelling <span id="spelling-count" class="count" hidden aria-hidden="true"></span></button><button id="principles" aria-pressed="false" type="button">Principes</button></nav><p id="summary" role="status" aria-live="polite"></p><main id="cards"></main><footer><p>Mogelijke aandachtspunten, geen beoordeling. Geen hint betekent niet dat alle code correct is.</p><button id="settings" type="button">Instellingen</button></footer><script nonce="${nonce}" src="${script}"></script></body></html>`;
+  v.webview.html=`<!doctype html><html lang="nl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src ${v.webview.cspSource}; script-src 'nonce-${nonce}';"><link rel="stylesheet" href="${style}"><title>CodeKompas</title></head><body><header><div class="heading"><h1>CodeKompas</h1><span id="version" dir="ltr"></span></div><p id="eyebrow" class="eyebrow">STAP VOOR STAP</p><p id="tagline">Jij zoekt. Wij wijzen de weg.</p><label id="language-label" for="language">Taal</label><select id="language"><option value="nl">Nederlands</option><option value="en">English</option><option value="tr">Türkçe</option><option value="ar">العربية</option><option value="ru">Русский</option></select><p id="file"></p><button id="pause" type="button">Pauzeren</button></header><nav aria-label="Ondersteuning"><button id="spelling" aria-pressed="true" type="button"><span id="spelling-label">Spelling</span> <span id="spelling-count" class="count" hidden aria-hidden="true"></span></button><button id="principles" aria-pressed="false" type="button">Principes</button></nav><p id="summary" role="status" aria-live="polite"></p><main id="cards"></main><footer><p id="footer-text">Mogelijke aandachtspunten, geen beoordeling. Geen hint betekent niet dat alle code correct is.</p><button id="settings" type="button">Instellingen</button></footer><script nonce="${nonce}" src="${script}"></script></body></html>`;
   context.subscriptions.push(v.webview.onDidReceiveMessage(async msg=>{
    if(!msg||typeof msg.type!=='string')return;
    if(msg.type==='ready'){refreshActive();return;}
+   if(msg.type==='language'&&languages.includes(msg.language)){language=msg.language;await languageState.update('language',language);recheck();return;}
    if(msg.type==='pause'){paused=!paused;recheck();return;}
    if(msg.type==='settings'){await vscode.commands.executeCommand('workbench.action.openSettings','@ext:codekompas.codekompas');return;}
    const doc=lastDocument,result=doc&&results.get(doc.uri.toString());

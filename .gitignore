@@ -1,0 +1,19 @@
+node_modules/
+*.vsix
+*.zip
+
+dist/
+coverage/
+*.log
+.DS_Store
+
+# Generated files and media belong outside the source tree.
+node_modules/
+dist/
+coverage/
+.DS_Store
+*.vsix
+*.zip
+*.mov
+*.mp4
+*.log

@@ -1,6 +1,6 @@
-# Testresultaten 4.0.0
+# Testresultaten 4.1.0
 
-184 tests geslaagd; 0 mislukt. VSIX succesvol verpakt.
+221 tests geslaagd; 0 mislukt. VSIX succesvol verpakt.
 
 De automatische suite controleert de analyzer, VS Code-adapter met host-mocks, interface-interacties met jsdom en de daadwerkelijke distributiebundel zonder externe runtime-imports.
 
@@ -13,3 +13,7 @@ Praktijkcontrole: installeer de nieuwe VSIX en herlaad het venster. Introduceer 
 ## Python en C#
 
 45 aanvullende tests controleren typefouten, bekende namen, eigen namen, hernoemde variabelen, blokkoppen, inspringing, haakjes, tekst, commentaar, importnamen, geldige korte namen, naamconventies, taalgebonden conceptkaarten, instellingen en save → schoon → nieuwe fout via de echte distributiebundel. De Python/C#-analyse is lexicaal; volledige compilerdekking wordt niet geclaimd.
+
+## 4.1.0: meertaligheid en zichtbaarheid
+
+37 extra tests controleren catalogusdekking voor vijf talen, vijf programmeertalen, vertaalde diagnostiek, taalkeuze, versie, regel/kolom, gemarkeerde code, Arabische RTL met LTR-code, terugschakelen naar Russisch/Nederlands, behoud van aantallen en broncode, en het weglaten van gelijkende API-namen uit voorbeelden. Geen handmatige VS Code-desktoptest of validatie door moedertaalsprekers uitgevoerd.
